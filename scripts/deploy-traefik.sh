@@ -17,10 +17,24 @@ fi
 
 echo "=== Deploy Traefik ==="
 
+# Render traefik.yml with envsubst (requires ACME_EMAIL)
+if [[ -z "${ACME_EMAIL:-}" ]]; then
+    echo "[ERROR] ACME_EMAIL env var is required (Let's Encrypt contact email)"
+    echo "  export ACME_EMAIL=you@example.com"
+    exit 1
+fi
+
+RENDERED_TRAEFIK="$(mktemp)"
+trap 'rm -f "${RENDERED_TRAEFIK}"' EXIT
+envsubst '${ACME_EMAIL}' < "${COMPOSE_SRC}/traefik.yml" > "${RENDERED_TRAEFIK}"
+
 # Upload config files
 echo "[*] Uploading Traefik config..."
 rsync -avz --delete \
-    "${COMPOSE_SRC}/traefik.yml" \
+    "${RENDERED_TRAEFIK}" \
+    "${SERVER}:${REMOTE_DIR}/traefik.yml"
+
+rsync -avz --delete \
     "${COMPOSE_SRC}/docker-compose.yml" \
     "${SERVER}:${REMOTE_DIR}/"
 
