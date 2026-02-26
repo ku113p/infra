@@ -6,8 +6,8 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - "8080:80"       # Temp ports — change to 80:80 after nginx swap
-      - "8443:443"      # Temp ports — change to 443:443 after nginx swap
+      - "80:80"
+      - "443:443"
     networks:
       - proxy
     volumes:
