@@ -68,6 +68,12 @@ services:
       - "traefik.http.routers.interview-mcp.entrypoints=websecure"
       - "traefik.http.routers.interview-mcp.tls.certresolver=letsencrypt"
       - "traefik.http.services.interview-mcp.loadbalancer.server.port=8080"
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'mcp_server.py' || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     deploy:
       resources:
         limits:
