@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # One-time VPS setup: Docker, firewall, directory structure
-# Usage: ssh root@REDACTED_VPS_IP 'bash -s' < scripts/setup-vps.sh
+# Usage: ssh root@$VPS_HOST 'bash -s' < scripts/setup-vps.sh
 
 set -euo pipefail
 
-SERVER_IP="REDACTED_VPS_IP"
+SERVER_IP="${VPS_HOST:?VPS_HOST env var is required}"
 SERVICES_DIR="/opt/services"
 
 echo "=== VPS Setup: Docker + Firewall + Directory Structure ==="

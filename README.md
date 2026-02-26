@@ -5,24 +5,48 @@ Infrastructure for [ku113p/interview](https://github.com/ku113p/interview): comp
 ## Architecture
 
 ```
-git push master
-    |
-    v
-GitHub Actions (in interview repo: .github/workflows/deploy.yml)
-    |  builds 3 images in parallel
-    |  pushes to ghcr.io/ku113p/...
-    v
-GHCR (GitHub Container Registry)
-    |
-    v
-Watchtower (on VPS, polls every 30s)
-    |  detects new image digest
-    |  pulls + restarts container
-    v
-Live
+interview repo                      infra repo
+  git push master                     git push master
+       |                                   |
+       v                                   v
+  GitHub Actions                      GitHub Actions
+  (build 3 Docker images)            (sync compose files to VPS)
+       |                                   |
+       v                                   |
+  GHCR (image registry)                   |
+       |                                   |
+       v                                   v
+  Watchtower (polls GHCR)            rsync + docker compose up
+       |                                   |
+       v                                   v
+      Live                               Live
 ```
 
-After initial VPS setup, deploy is fully automatic: just `git push origin master` in the interview repo.
+Both repos auto-deploy on push to master. No manual SSH needed.
+
+## GitHub Secrets
+
+Set these in **both repos** → Settings → Secrets and variables → Actions:
+
+| Secret | Where | Purpose |
+|--------|-------|---------|
+| `VPS_HOST` | infra | VPS IP address |
+| `VPS_SSH_KEY` | infra | SSH private key (ed25519) for root@VPS |
+| `ACME_EMAIL` | infra | Let's Encrypt certificate notifications |
+
+`GITHUB_TOKEN` is automatic — no setup needed for the interview repo's image builds.
+
+### Generating the SSH key
+
+```bash
+# On your local machine
+ssh-keygen -t ed25519 -f ~/.ssh/vps_deploy -N ""
+
+# Copy public key to VPS
+ssh-copy-id -i ~/.ssh/vps_deploy.pub root@YOUR_VPS_IP
+
+# The PRIVATE key (~/.ssh/vps_deploy) goes into GitHub secret VPS_SSH_KEY
+```
 
 ## Services
 
@@ -39,7 +63,9 @@ After initial VPS setup, deploy is fully automatic: just `git push origin master
 /opt/services/
 ├── interview/          # docker-compose.yml + .env
 ├── watchtower/         # docker-compose.yml
-└── traefik/            # reverse proxy (manages TLS)
+├── traefik/            # reverse proxy (manages TLS)
+├── landing/            # static site + nginx
+└── monitoring/         # uptime-kuma + dozzle
 ```
 
 ## Traefik Routing
@@ -54,28 +80,23 @@ Services join the `proxy` network and declare Traefik labels to register routes.
 ## How to Add a New Service
 
 1. Add a Dockerfile in the app directory (e.g., `backend/Dockerfile` in the interview repo)
-2. Add a CI job in the interview repo's `.github/workflows/deploy.yml` (copy an existing job, change context/file/tags)
-3. Add the service to `compose/interview/docker-compose.yml` with:
-   - `image: ghcr.io/ku113p/<name>:latest`
-   - `com.centurylinklabs.watchtower.enable=true` label
-   - Traefik labels for routing
+2. Add a CI job in the interview repo's `.github/workflows/deploy.yml`
+3. Add the service to `compose/interview/docker-compose.yml` with Traefik labels
 4. Create DNS A record pointing to VPS IP
-5. Deploy: `bash scripts/deploy-interview.sh` (first time) or just `git push` in the interview repo
+5. Push both repos — CI handles the rest
 
 ## Common Operations
 
 ### View logs
 
 ```bash
-ssh root@REDACTED_VPS_IP
+ssh root@$VPS_HOST
 
 # All interview services
 cd /opt/services/interview && docker compose logs -f
 
 # Single service
 docker logs -f interview-backend
-docker logs -f interview-promo
-docker logs -f interview-mcp
 
 # Watchtower (see pull activity)
 docker logs -f watchtower
@@ -84,44 +105,28 @@ docker logs -f watchtower
 ### Restart a service
 
 ```bash
-ssh root@REDACTED_VPS_IP
+ssh root@$VPS_HOST
 cd /opt/services/interview && docker compose restart backend
 ```
 
 ### Rollback
 
-Pull a previous image digest and restart:
+Revert the git commit and push — CI will build and deploy the old code.
+
+Or manually on VPS:
 
 ```bash
-ssh root@REDACTED_VPS_IP
-
-# Find previous digest
+ssh root@$VPS_HOST
 docker images ghcr.io/ku113p/interview-backend --digests
-
 # Pin to specific digest in docker-compose.yml, then:
 cd /opt/services/interview && docker compose up -d backend
 ```
 
-Or revert the git commit and push — CI will build and deploy the old code.
-
 ### Check resource usage
 
 ```bash
-ssh root@REDACTED_VPS_IP
+ssh root@$VPS_HOST
 docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
-```
-
-### Force pull (skip Watchtower wait)
-
-```bash
-ssh root@REDACTED_VPS_IP
-cd /opt/services/interview && docker compose pull && docker compose up -d
-```
-
-### Manual deploy (fallback)
-
-```bash
-bash scripts/deploy-interview.sh
 ```
 
 ## DNS Reference
@@ -135,14 +140,13 @@ bash scripts/deploy-interview.sh
 ## One-Time VPS Setup
 
 ```bash
-# 1. Auth VPS to GHCR (need GitHub PAT with read:packages)
-ssh root@REDACTED_VPS_IP
+# 1. Run setup script
+ssh root@$VPS_HOST 'bash -s' < scripts/setup-vps.sh
+
+# 2. Auth VPS to GHCR (need GitHub PAT with read:packages)
+ssh root@$VPS_HOST
 echo "ghp_..." | docker login ghcr.io -u ku113p --password-stdin
 
-# 2. Deploy watchtower
-scp compose/watchtower/docker-compose.yml root@REDACTED_VPS_IP:/opt/services/watchtower/
-ssh root@REDACTED_VPS_IP "cd /opt/services/watchtower && docker compose up -d"
-
-# 3. Update interview compose on VPS
-bash scripts/deploy-interview.sh
+# 3. Push this repo — CI deploys everything automatically
+git push origin master
 ```

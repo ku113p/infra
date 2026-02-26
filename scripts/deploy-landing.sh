@@ -7,7 +7,13 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-SERVER="root@REDACTED_VPS_IP"
+
+if [[ -z "${VPS_HOST:-}" ]]; then
+    echo "[ERROR] VPS_HOST env var is required"
+    exit 1
+fi
+
+SERVER="root@${VPS_HOST}"
 REMOTE_DIR="/opt/services/landing"
 COMPOSE_SRC="${SCRIPT_DIR}/../compose/landing"
 

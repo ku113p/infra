@@ -6,7 +6,13 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-SERVER="root@REDACTED_VPS_IP"
+
+if [[ -z "${VPS_HOST:-}" ]]; then
+    echo "[ERROR] VPS_HOST env var is required"
+    exit 1
+fi
+
+SERVER="root@${VPS_HOST}"
 REMOTE_DIR="/opt/services/traefik"
 COMPOSE_SRC="${SCRIPT_DIR}/../compose/traefik"
 
