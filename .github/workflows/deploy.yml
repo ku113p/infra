@@ -39,8 +39,8 @@ jobs:
         run: |
           SERVER="root@${{ secrets.VPS_HOST }}"
           ssh ${SERVER} "
-            cd /opt/services/interview && docker compose pull && docker compose up -d --force-recreate
-            cd /opt/services/watchtower && docker compose up -d --force-recreate
-            cd /opt/services/traefik && docker compose pull && docker compose up -d --force-recreate
-            cd /opt/services/monitoring && docker compose pull && docker compose up -d --force-recreate
+            cd /opt/services/interview && docker compose up -d
+            cd /opt/services/watchtower && docker compose up -d
+            cd /opt/services/traefik && docker compose up -d
+            cd /opt/services/monitoring && docker compose up -d
           "
