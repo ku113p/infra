@@ -8,8 +8,7 @@ SERVER := root@$(VPS_HOST)
 SERVICES_DIR := /opt/services
 
 .PHONY: help status health stats logs logs-traefik logs-service \
-	restart-interview restart-traefik restart-monitoring restart-all \
-	deploy-traefik deploy-interview deploy-landing
+	restart-interview restart-traefik restart-monitoring restart-all
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -55,14 +54,3 @@ restart-all: ## Restart all stacks
 		cd $(SERVICES_DIR)/landing && docker compose up -d && \
 		cd $(SERVICES_DIR)/monitoring && docker compose up -d && \
 		cd $(SERVICES_DIR)/watchtower && docker compose up -d"
-
-# --- Deploy (manual fallback) ---
-
-deploy-traefik: ## Deploy traefik stack
-	@bash scripts/deploy-traefik.sh
-
-deploy-interview: ## Deploy interview stack
-	@bash scripts/deploy-interview.sh
-
-deploy-landing: ## Deploy landing page
-	@bash scripts/deploy-landing.sh

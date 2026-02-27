@@ -57,7 +57,7 @@ ssh-copy-id -i ~/.ssh/vps_deploy.pub root@YOUR_VPS_IP
 | backend | `ghcr.io/ku113p/interview-backend` | 8080 | https://api.interview.syncapp.tech |
 | mcp | `ghcr.io/ku113p/interview-mcp` | 8080 | https://mcp.interview.syncapp.tech |
 | watchtower | `containrrr/watchtower` | — | — |
-| landing | `nginx:alpine` | 80 | https://syncapp.tech |
+| landing | `nginx:alpine` | 80 | https://syncapp.tech (404 placeholder) |
 | uptime-kuma | `louislam/uptime-kuma` | 3001 | https://monitor.syncapp.tech |
 | dozzle | `amir20/dozzle` | 8080 | https://logs.syncapp.tech |
 
@@ -68,7 +68,7 @@ ssh-copy-id -i ~/.ssh/vps_deploy.pub root@YOUR_VPS_IP
 ├── interview/          # docker-compose.yml + .env
 ├── watchtower/         # docker-compose.yml
 ├── traefik/            # reverse proxy (manages TLS)
-├── landing/            # static site + nginx
+├── landing/            # 404 placeholder + nginx
 └── monitoring/         # uptime-kuma + dozzle
 ```
 
@@ -101,8 +101,6 @@ make logs-traefik        # Tail traefik logs
 make logs-service SVC=backend  # Tail a specific service
 make restart-interview   # Restart interview stack
 make restart-all         # Restart all stacks
-make deploy-traefik      # Manual traefik deploy
-make deploy-interview    # Manual interview deploy
 ```
 
 ### Rollback
@@ -122,7 +120,7 @@ cd /opt/services/interview && docker compose up -d backend
 
 | Subdomain | Target | Purpose |
 |-----------|--------|---------|
-| `syncapp.tech` | VPS IP (A record) | Landing page |
+| `syncapp.tech` | VPS IP (A record) | 404 placeholder |
 | `promo.interview.syncapp.tech` | VPS IP (A record) | Interview promo |
 | `api.interview.syncapp.tech` | VPS IP (A record) | Backend API |
 | `mcp.interview.syncapp.tech` | VPS IP (A record) | MCP server |

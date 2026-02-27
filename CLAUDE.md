@@ -32,7 +32,7 @@ Infrastructure-as-code repository managing Docker Compose stacks, deployment scr
          ┌────────────┼────────────┬──────────────┐
          v            v            v              v
       landing      interview    monitoring     watchtower
-      (nginx)    ┌──────────┐  (uptime-kuma    (image
+      (404)     ┌──────────┐  (uptime-kuma    (image
                  │ promo    │   + dozzle)       updater)
                  │ backend  │
                  │ mcp      │
@@ -60,13 +60,10 @@ Fully automated via per-stack GitHub Actions workflows on push to `master` (`.gi
 
 **Required GitHub secrets**: `VPS_HOST`, `VPS_SSH_KEY` (ed25519), `ACME_EMAIL`, `ADMIN_HTPASSWD`
 
-Manual deployment scripts in `scripts/`:
-- `setup-vps.sh` — one-time VPS provisioning (Docker, firewall, directory structure)
-- `deploy-interview.sh` — manual fallback for interview stack
-- `deploy-landing.sh` — builds Astro frontend from sibling `../interview/frontend` dir, deploys static files
-- `deploy-traefik.sh [--swap]` — deploy Traefik, `--swap` migrates from temp ports to production
+Scripts in `scripts/`:
+- `setup-vps.sh` — one-time VPS provisioning (Docker, firewall, directory structure, log rotation)
 
-Scripts source `scripts/lib.sh` for shared functions and expect `VPS_HOST` (and sometimes `ACME_EMAIL`, `ADMIN_HTPASSWD`) as environment variables. A `Makefile` provides shortcuts for common operations (`make help`).
+A `Makefile` provides shortcuts for common operations (`make help`).
 
 ## Conventions
 
