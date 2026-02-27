@@ -8,6 +8,7 @@ source "${SCRIPT_DIR}/lib.sh"
 
 init_server
 require_env "ACME_EMAIL" "export ACME_EMAIL=you@example.com"
+require_env "ADMIN_HTPASSWD" "export ADMIN_HTPASSWD='user:\$apr1\$...hash...'"
 
 REMOTE_DIR="/opt/services/traefik"
 COMPOSE_SRC="${SCRIPT_DIR}/../compose/traefik"
@@ -19,10 +20,14 @@ fi
 
 echo "=== Deploy Traefik ==="
 
-# Render traefik.yml
+# Render templates
 RENDERED_TRAEFIK="$(mktemp)"
-trap 'rm -f "${RENDERED_TRAEFIK}"' EXIT
+RENDERED_DYNAMIC="$(mktemp -d)"
+trap 'rm -f "${RENDERED_TRAEFIK}"; rm -rf "${RENDERED_DYNAMIC}"' EXIT
+
 render_template "${COMPOSE_SRC}/traefik.yml" '${ACME_EMAIL}' > "${RENDERED_TRAEFIK}"
+cp -r "${COMPOSE_SRC}/dynamic/"* "${RENDERED_DYNAMIC}/"
+render_template "${COMPOSE_SRC}/dynamic/middlewares.yml" '${ADMIN_HTPASSWD}' > "${RENDERED_DYNAMIC}/middlewares.yml"
 
 # Upload config files
 echo "[*] Uploading Traefik config..."
@@ -35,7 +40,7 @@ rsync -avz \
     "${SERVER}:${REMOTE_DIR}/"
 
 rsync -avz --delete \
-    "${COMPOSE_SRC}/dynamic/" \
+    "${RENDERED_DYNAMIC}/" \
     "${SERVER}:${REMOTE_DIR}/dynamic/"
 
 if $SWAP_MODE; then

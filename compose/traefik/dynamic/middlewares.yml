@@ -20,4 +20,4 @@ http:
     admin-auth:
       basicAuth:
         users:
-          - "overuse:$apr1$Hb.RQweY$iZ17xbM9Q.pNTfjBk1cGq."
+          - "${ADMIN_HTPASSWD}"

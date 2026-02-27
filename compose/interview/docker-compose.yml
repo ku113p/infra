@@ -67,6 +67,7 @@ services:
       - "traefik.http.routers.interview-mcp.rule=Host(`mcp.interview.syncapp.tech`)"
       - "traefik.http.routers.interview-mcp.entrypoints=websecure"
       - "traefik.http.routers.interview-mcp.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.interview-mcp.middlewares=security-headers@file,rate-limit-api@file,gzip@file"
       - "traefik.http.services.interview-mcp.loadbalancer.server.port=8080"
     healthcheck:
       test: ["CMD-SHELL", "pgrep -f 'mcp_server.py' || exit 1"]
