@@ -12,7 +12,6 @@ services:
       - "traefik.http.routers.monitor.rule=Host(`monitor.syncapp.tech`)"
       - "traefik.http.routers.monitor.entrypoints=websecure"
       - "traefik.http.routers.monitor.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.monitor.middlewares=admin-auth@file"
       - "traefik.http.services.monitor.loadbalancer.server.port=3001"
 
   dozzle:
