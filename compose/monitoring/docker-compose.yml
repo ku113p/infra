@@ -22,12 +22,14 @@ services:
       - proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - dozzle-data:/data
+    environment:
+      - DOZZLE_AUTH_PROVIDER=simple
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.logs.rule=Host(`logs.syncapp.tech`)"
       - "traefik.http.routers.logs.entrypoints=websecure"
       - "traefik.http.routers.logs.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.logs.middlewares=admin-auth@file"
       - "traefik.http.services.logs.loadbalancer.server.port=8080"
 
 networks:
@@ -36,3 +38,4 @@ networks:
 
 volumes:
   kuma-data:
+  dozzle-data:
