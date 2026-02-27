@@ -33,7 +33,7 @@ Set these in **both repos** → Settings → Secrets and variables → Actions:
 | `VPS_HOST` | infra | VPS IP address |
 | `VPS_SSH_KEY` | infra | SSH private key (ed25519) for root@VPS |
 | `ACME_EMAIL` | infra | Let's Encrypt certificate notifications |
-| `ADMIN_HTPASSWD` | infra | htpasswd hash for monitoring dashboards (e.g. `admin:$apr1$...`) |
+| `DOZZLE_PASSWORD_HASH` | infra | bcrypt hash for Dozzle login (generate with `docker run amir20/dozzle generate admin --password YOUR_PASS`) |
 
 `GITHUB_TOKEN` is automatic — no setup needed for the interview repo's image builds.
 

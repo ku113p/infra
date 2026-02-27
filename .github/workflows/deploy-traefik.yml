@@ -17,14 +17,6 @@ jobs:
         env:
           ACME_EMAIL: ${{ secrets.ACME_EMAIL }}
 
-      - name: Render middlewares.yml
-        run: |
-          mkdir -p /tmp/dynamic
-          cp compose/traefik/dynamic/* /tmp/dynamic/
-          envsubst '${ADMIN_HTPASSWD}' < compose/traefik/dynamic/middlewares.yml > /tmp/dynamic/middlewares.yml
-        env:
-          ADMIN_HTPASSWD: ${{ secrets.ADMIN_HTPASSWD }}
-
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -38,7 +30,7 @@ jobs:
           SERVER="root@${{ secrets.VPS_HOST }}"
           rsync -avz /tmp/traefik.yml ${SERVER}:/opt/services/traefik/traefik.yml
           rsync -avz compose/traefik/docker-compose.yml ${SERVER}:/opt/services/traefik/
-          rsync -avz --delete /tmp/dynamic/ ${SERVER}:/opt/services/traefik/dynamic/
+          rsync -avz --delete compose/traefik/dynamic/ ${SERVER}:/opt/services/traefik/dynamic/
 
       - name: Restart traefik
         run: |

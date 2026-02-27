@@ -54,11 +54,11 @@ Infrastructure-as-code repository managing Docker Compose stacks, deployment scr
 
 Fully automated via per-stack GitHub Actions workflows on push to `master` (`.github/workflows/deploy-<stack>.yml`). Each workflow triggers only when its `compose/<stack>/` directory changes:
 1. Syncs compose files to VPS via rsync
-2. Renders templates (traefik.yml with `ACME_EMAIL`, middlewares.yml with `ADMIN_HTPASSWD`)
+2. Renders templates where needed (traefik.yml with `ACME_EMAIL`)
 3. Runs `docker compose up -d` via SSH
 4. Verifies containers are healthy
 
-**Required GitHub secrets**: `VPS_HOST`, `VPS_SSH_KEY` (ed25519), `ACME_EMAIL`, `ADMIN_HTPASSWD`
+**Required GitHub secrets**: `VPS_HOST`, `VPS_SSH_KEY` (ed25519), `ACME_EMAIL`, `DOZZLE_PASSWORD_HASH`
 
 Scripts in `scripts/`:
 - `setup-vps.sh` — one-time VPS provisioning (Docker, firewall, directory structure, log rotation)
@@ -71,7 +71,7 @@ A `Makefile` provides shortcuts for common operations (`make help`).
 - **Watchtower opt-in**: services use `com.centurylinklabs.watchtower.enable=true` label
 - **Traefik labels**: services declare their own routing rules via Docker labels (host rules, entrypoints, middleware)
 - **Healthchecks**: HTTP-based for web servers, process-based (`pgrep`) for backend services without HTTP health endpoints
-- **Templating**: `traefik.yml` uses envsubst (`${ACME_EMAIL}`), `middlewares.yml` uses envsubst (`${ADMIN_HTPASSWD}`); all other config is static
+- **Templating**: `traefik.yml` uses envsubst (`${ACME_EMAIL}`); all other config is static. Dozzle users.yml is seeded on first deploy via `DOZZLE_PASSWORD_HASH` secret
 
 ## Project Rules
 
