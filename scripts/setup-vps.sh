@@ -33,7 +33,7 @@ systemctl restart docker
 
 # --- Directory structure ---
 echo "[*] Creating directory structure..."
-mkdir -p "${SERVICES_DIR}"/{traefik/{dynamic,acme,logs},interview/{backend,promo-dist,data},monitoring,backup}
+mkdir -p "${SERVICES_DIR}"/{traefik/{dynamic,acme,logs},interview/{backend,promo-dist,data},monitoring,price-alert-bot,backup}
 
 # Traefik cert file (must exist with strict permissions)
 touch "${SERVICES_DIR}/traefik/acme/acme.json"

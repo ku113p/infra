@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Infrastructure-as-code repository managing Docker Compose stacks, deployment scripts, and CI/CD for the `ku113p/interview` project. Deployed to a single VPS with Traefik as the reverse proxy. All services run under `syncapp.tech` domain.
+Infrastructure-as-code repository managing Docker Compose stacks, deployment scripts, and CI/CD for multiple projects. Deployed to a single VPS with Traefik as the reverse proxy. All web services run under `syncapp.tech` domain.
 
 ## Architecture
 
@@ -31,13 +31,13 @@ Infrastructure-as-code repository managing Docker Compose stacks, deployment scr
                       │ proxy network
          ┌────────────┼────────────┬──────────────┐
          v            v            v              v
-      interview    monitoring     watchtower
-   ┌──────────┐  (uptime-kuma    (image
-   │ promo    │   + dozzle)       updater)
-                 │ backend  │
-                 │ mcp      │
-                 └──────────┘
-                   interview-internal network
+      interview    monitoring     watchtower   price-alert-bot
+   ┌──────────┐  (uptime-kuma    (image       (Telegram bot +
+   │ promo    │   + dozzle)       updater)     Postgres +
+   │ backend  │                                PgBouncer)
+   │ mcp      │                                price-alert-bot-
+   └──────────┘                                internal network
+     interview-internal network
 ```
 
 **Compose stacks** live in `compose/<service>/docker-compose.yml`. Each maps to `/opt/services/<service>/` on the VPS.
@@ -48,7 +48,12 @@ Infrastructure-as-code repository managing Docker Compose stacks, deployment scr
 - **mcp** — MCP server, 0.5 CPU / 512MB RAM limit (process healthcheck on `mcp_server.py`)
 - backend and mcp share a `backend-data` volume and read from `.env` on the VPS
 
-**Networking**: All stacks join the external `proxy` network for Traefik discovery. Interview services also have an `interview-internal` network.
+**Key services** in the price-alert-bot stack:
+- **app** — Telegram bot for crypto price alerts (CoinMarketCap API), 0.5 CPU / 256MB RAM limit (process healthcheck on `server`)
+- **db** — PostgreSQL 17.4 with PgBouncer connection pooling
+- Reads from `.env` on the VPS (`TG_API_TOKEN`, `CMC_API_KEY`, `DATABASE_URL`, `UPDATE_INTERVAL_MS`)
+
+**Networking**: Web-facing stacks join the external `proxy` network for Traefik discovery. Interview services also have an `interview-internal` network. Price-alert-bot uses its own `price-alert-bot-internal` network (no web traffic, Telegram polling only).
 
 ## Deployment
 
