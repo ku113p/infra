@@ -39,4 +39,5 @@ networks:
 volumes:
   kuma-data:
   dozzle-data:
+    name: monitoring_dozzle-data
     external: true
