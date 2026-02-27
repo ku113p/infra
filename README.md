@@ -33,6 +33,7 @@ Set these in **both repos** → Settings → Secrets and variables → Actions:
 | `VPS_HOST` | infra | VPS IP address |
 | `VPS_SSH_KEY` | infra | SSH private key (ed25519) for root@VPS |
 | `ACME_EMAIL` | infra | Let's Encrypt certificate notifications |
+| `ADMIN_HTPASSWD` | infra | htpasswd hash for monitoring dashboards (e.g. `admin:$apr1$...`) |
 
 `GITHUB_TOKEN` is automatic — no setup needed for the interview repo's image builds.
 
@@ -56,6 +57,9 @@ ssh-copy-id -i ~/.ssh/vps_deploy.pub root@YOUR_VPS_IP
 | backend | `ghcr.io/ku113p/interview-backend` | 8080 | https://api.interview.syncapp.tech |
 | mcp | `ghcr.io/ku113p/interview-mcp` | 8080 | https://mcp.interview.syncapp.tech |
 | watchtower | `containrrr/watchtower` | — | — |
+| landing | `nginx:alpine` | 80 | https://syncapp.tech |
+| uptime-kuma | `louislam/uptime-kuma` | 3001 | https://monitor.syncapp.tech |
+| dozzle | `amir20/dozzle` | 8080 | https://logs.syncapp.tech |
 
 ## VPS Layout
 
@@ -81,32 +85,24 @@ Services join the `proxy` network and declare Traefik labels to register routes.
 
 1. Add a Dockerfile in the app directory (e.g., `backend/Dockerfile` in the interview repo)
 2. Add a CI job in the interview repo's `.github/workflows/deploy.yml`
-3. Add the service to `compose/interview/docker-compose.yml` with Traefik labels
+3. Add the service to the relevant `compose/<stack>/docker-compose.yml` with Traefik labels
 4. Create DNS A record pointing to VPS IP
-5. Push both repos — CI handles the rest
+5. Push both repos — the per-stack CI workflow handles the rest
 
 ## Common Operations
 
-### View logs
+A `Makefile` provides shortcuts for common tasks. Run `make help` to see all targets.
 
 ```bash
-ssh root@$VPS_HOST
-
-# All interview services
-cd /opt/services/interview && docker compose logs -f
-
-# Single service
-docker logs -f interview-backend
-
-# Watchtower (see pull activity)
-docker logs -f watchtower
-```
-
-### Restart a service
-
-```bash
-ssh root@$VPS_HOST
-cd /opt/services/interview && docker compose restart backend
+make status              # Show all containers
+make stats               # Show resource usage
+make logs                # Tail interview service logs
+make logs-traefik        # Tail traefik logs
+make logs-service SVC=backend  # Tail a specific service
+make restart-interview   # Restart interview stack
+make restart-all         # Restart all stacks
+make deploy-traefik      # Manual traefik deploy
+make deploy-interview    # Manual interview deploy
 ```
 
 ### Rollback
@@ -122,20 +118,16 @@ docker images ghcr.io/ku113p/interview-backend --digests
 cd /opt/services/interview && docker compose up -d backend
 ```
 
-### Check resource usage
-
-```bash
-ssh root@$VPS_HOST
-docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
-```
-
 ## DNS Reference
 
 | Subdomain | Target | Purpose |
 |-----------|--------|---------|
-| `promo.interview.syncapp.tech` | VPS IP (A record) | Landing page |
+| `syncapp.tech` | VPS IP (A record) | Landing page |
+| `promo.interview.syncapp.tech` | VPS IP (A record) | Interview promo |
 | `api.interview.syncapp.tech` | VPS IP (A record) | Backend API |
 | `mcp.interview.syncapp.tech` | VPS IP (A record) | MCP server |
+| `monitor.syncapp.tech` | VPS IP (A record) | Uptime Kuma |
+| `logs.syncapp.tech` | VPS IP (A record) | Dozzle (log viewer) |
 
 ## One-Time VPS Setup
 
