@@ -3,16 +3,12 @@
 # Usage: bash scripts/deploy-traefik.sh [--swap]
 #   --swap: Switch from temp ports (8080/8443) to production (80/443)
 
-set -euo pipefail
-
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/lib.sh"
 
-if [[ -z "${VPS_HOST:-}" ]]; then
-    echo "[ERROR] VPS_HOST env var is required"
-    exit 1
-fi
+init_server
+require_env "ACME_EMAIL" "export ACME_EMAIL=you@example.com"
 
-SERVER="root@${VPS_HOST}"
 REMOTE_DIR="/opt/services/traefik"
 COMPOSE_SRC="${SCRIPT_DIR}/../compose/traefik"
 
@@ -23,24 +19,18 @@ fi
 
 echo "=== Deploy Traefik ==="
 
-# Render traefik.yml with envsubst (requires ACME_EMAIL)
-if [[ -z "${ACME_EMAIL:-}" ]]; then
-    echo "[ERROR] ACME_EMAIL env var is required (Let's Encrypt contact email)"
-    echo "  export ACME_EMAIL=you@example.com"
-    exit 1
-fi
-
+# Render traefik.yml
 RENDERED_TRAEFIK="$(mktemp)"
 trap 'rm -f "${RENDERED_TRAEFIK}"' EXIT
-envsubst '${ACME_EMAIL}' < "${COMPOSE_SRC}/traefik.yml" > "${RENDERED_TRAEFIK}"
+render_template "${COMPOSE_SRC}/traefik.yml" '${ACME_EMAIL}' > "${RENDERED_TRAEFIK}"
 
 # Upload config files
 echo "[*] Uploading Traefik config..."
-rsync -avz --delete \
+rsync -avz \
     "${RENDERED_TRAEFIK}" \
     "${SERVER}:${REMOTE_DIR}/traefik.yml"
 
-rsync -avz --delete \
+rsync -avz \
     "${COMPOSE_SRC}/docker-compose.yml" \
     "${SERVER}:${REMOTE_DIR}/"
 
@@ -67,7 +57,7 @@ ssh "$SERVER" "cd ${REMOTE_DIR} && docker compose pull && docker compose up -d"
 
 echo "[*] Checking health..."
 sleep 3
-ssh "$SERVER" "docker ps --filter name=traefik --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
+verify_containers "traefik" 1
 
 if $SWAP_MODE; then
     echo ""
@@ -76,7 +66,6 @@ if $SWAP_MODE; then
     echo "[!] Rollback: docker compose down && systemctl start nginx"
 else
     echo ""
-    echo "[OK] Traefik deployed on temp ports 8080/8443"
-    echo "[!] Test: curl -k https://localhost:8443 --resolve syncapp.tech:8443:127.0.0.1"
-    echo "[!] When ready: bash scripts/deploy-traefik.sh --swap"
+    echo "[OK] Traefik deployed"
+    echo "[!] Verify: curl -I https://syncapp.tech"
 fi

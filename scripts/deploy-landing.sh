@@ -3,17 +3,12 @@
 # Requires the interview repo to be cloned as a sibling directory.
 # Usage: bash scripts/deploy-landing.sh
 
-set -euo pipefail
-
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+source "${SCRIPT_DIR}/lib.sh"
 
-if [[ -z "${VPS_HOST:-}" ]]; then
-    echo "[ERROR] VPS_HOST env var is required"
-    exit 1
-fi
+init_server
 
-SERVER="root@${VPS_HOST}"
 REMOTE_DIR="/opt/services/landing"
 COMPOSE_SRC="${SCRIPT_DIR}/../compose/landing"
 
@@ -46,7 +41,6 @@ rsync -avz \
     "${COMPOSE_SRC}/docker-compose.yml" \
     "${SERVER}:${REMOTE_DIR}/"
 
-# Landing uses volume-mounted nginx.conf — upload it from compose dir
 if [ -f "${COMPOSE_SRC}/nginx.conf" ]; then
     rsync -avz \
         "${COMPOSE_SRC}/nginx.conf" \

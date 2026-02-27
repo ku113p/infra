@@ -4,16 +4,11 @@
 #
 # Usage: bash scripts/deploy-interview.sh
 
-set -euo pipefail
-
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/lib.sh"
 
-if [[ -z "${VPS_HOST:-}" ]]; then
-    echo "[ERROR] VPS_HOST env var is required"
-    exit 1
-fi
+init_server
 
-SERVER="root@${VPS_HOST}"
 REMOTE_DIR="/opt/services/interview"
 COMPOSE_SRC="${SCRIPT_DIR}/../compose/interview"
 
@@ -30,8 +25,7 @@ echo "[*] Pulling images and starting services..."
 ssh "$SERVER" "cd ${REMOTE_DIR} && docker compose pull && docker compose up -d"
 
 echo ""
-echo "[*] Container status:"
-ssh "$SERVER" "docker ps --filter 'name=interview-' --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
+verify_containers "interview-" 3
 
 echo ""
 echo "[OK] Interview product deployed"
