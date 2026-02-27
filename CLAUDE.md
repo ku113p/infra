@@ -29,18 +29,21 @@ Infrastructure-as-code repository managing Docker Compose stacks, deployment scr
               │   (port 80/443) │
               └───────┬─────────┘
                       │ proxy network
-         ┌────────────┼────────────┬──────────────┐
-         v            v            v              v
-      interview    monitoring     watchtower   price-alert-bot
-   ┌──────────┐  (uptime-kuma    (image       (Telegram bot +
-   │ promo    │   + dozzle)       updater)     Postgres +
-   │ backend  │                                PgBouncer)
-   │ mcp      │                                price-alert-bot-
-   └──────────┘                                internal network
-     interview-internal network
+         ┌──────┼────────────┼────────────┬──────────────┐
+         v      v            v            v              v
+      landing  interview    monitoring   watchtower   price-alert-bot
+      (React   ┌──────────┐ (uptime-kuma (image       (Telegram bot +
+       SPA)    │ promo    │  + dozzle)    updater)     Postgres +
+               │ backend  │                            PgBouncer)
+               │ mcp      │                            price-alert-bot-
+               └──────────┘                            internal network
+                 interview-internal network
 ```
 
 **Compose stacks** live in `compose/<service>/docker-compose.yml`. Each maps to `/opt/services/<service>/` on the VPS.
+
+**Landing** stack (`syncapp.tech`, `www.syncapp.tech`):
+- **landing** — React/Vite SPA personal brand page, built from Dockerfile (multi-stage: node build → nginx serve). Personal info injected via `VITE_*` build args from `.env` on VPS.
 
 **Key services** in the interview stack:
 - **promo** — landing page (HTTP healthcheck)
@@ -63,7 +66,7 @@ Fully automated via per-stack GitHub Actions workflows on push to `master` (`.gi
 3. Runs `docker compose up -d` via SSH
 4. Verifies containers are healthy
 
-**Required GitHub secrets**: `VPS_HOST`, `VPS_SSH_KEY` (ed25519), `ACME_EMAIL`, `DOZZLE_PASSWORD_HASH`
+**Required GitHub secrets**: `VPS_HOST`, `VPS_SSH_KEY` (ed25519), `ACME_EMAIL`, `DOZZLE_PASSWORD_HASH`, `LANDING_NAME`, `LANDING_TITLE`, `LANDING_BIO`, `LANDING_EMAIL`, `LANDING_TELEGRAM`, `LANDING_LINKEDIN`
 
 Scripts in `scripts/`:
 - `setup-vps.sh` — one-time VPS provisioning (Docker, firewall, directory structure, log rotation)

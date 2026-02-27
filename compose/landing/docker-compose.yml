@@ -1,0 +1,31 @@
+services:
+  landing:
+    build:
+      context: .
+      args:
+        - VITE_NAME=${LANDING_NAME}
+        - VITE_TITLE=${LANDING_TITLE}
+        - VITE_BIO=${LANDING_BIO}
+        - VITE_EMAIL=${LANDING_EMAIL}
+        - VITE_TELEGRAM=${LANDING_TELEGRAM}
+        - VITE_LINKEDIN=${LANDING_LINKEDIN}
+    container_name: landing
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.landing.rule=Host(`syncapp.tech`) || Host(`www.syncapp.tech`)"
+      - "traefik.http.routers.landing.entrypoints=websecure"
+      - "traefik.http.routers.landing.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.landing.middlewares=security-headers@file,gzip@file"
+      - "traefik.http.services.landing.loadbalancer.server.port=80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+networks:
+  proxy:
+    external: true
