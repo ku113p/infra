@@ -26,7 +26,7 @@ const projects = [
       },
       {
         label: "GitHub",
-        url: "https://github.com/digitalscyther/price-alert-bot",
+        url: "https://github.com/ku113p/price-alert-bot",
         icon: "github",
       },
     ],
