@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from "react";
 import projects from "./data/projects";
+import experience from "./data/experience";
 
 const env = import.meta.env;
 
@@ -40,6 +42,56 @@ const techStack = {
   ],
   Monitoring: ["Prometheus", "Grafana", "Datadog"],
 };
+
+const sections = [
+  { id: "projects", label: "Projects" },
+  { id: "experience", label: "Experience" },
+  { id: "stack", label: "Stack" },
+];
+
+/* ── Hooks ── */
+
+function useScrollReveal() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("visible");
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.1 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return ref;
+}
+
+function useActiveSection() {
+  const [active, setActive] = useState("");
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px" },
+    );
+    sections.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+  return active;
+}
+
+/* ── Icons ── */
 
 function MailIcon() {
   return (
@@ -84,6 +136,59 @@ function ExternalLinkIcon() {
   );
 }
 
+function ChevronIcon({ open }) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`chevron ${open ? "chevron-open" : ""}`}
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
+}
+
+function LinkIcon({ icon }) {
+  if (icon === "github") return <GitHubIcon />;
+  if (icon === "telegram") return <TelegramIcon />;
+  return <ExternalLinkIcon />;
+}
+
+/* ── Navigation ── */
+
+function Nav() {
+  const active = useActiveSection();
+  return (
+    <nav className="nav">
+      <div className="nav-inner">
+        <a href="#" className="nav-brand" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+          {name.split(" ")[0].toLowerCase()}
+          <span className="accent">.</span>
+        </a>
+        <div className="nav-links">
+          {sections.map(({ id, label }) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              className={`nav-link ${active === id ? "nav-link-active" : ""}`}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+/* ── Sections ── */
+
 function ContactLinks() {
   const links = [];
 
@@ -127,23 +232,22 @@ function ContactLinks() {
 }
 
 function ProjectCard({ project }) {
+  const ref = useScrollReveal();
   return (
-    <div className="project-card">
+    <div className="project-card reveal" ref={ref}>
       <h3 className="project-name">{project.name}</h3>
       <p className="project-description">{project.description}</p>
       <div className="project-tech">
         {project.tech.map((t) => (
-          <span key={t} className="tech-badge">
-            {t}
-          </span>
+          <span key={t} className="tech-badge">{t}</span>
         ))}
       </div>
       {project.links.length > 0 && (
         <div className="project-links">
           {project.links.map((link) => (
             <a key={link.url} href={link.url} className="project-link" target="_blank" rel="noopener noreferrer">
+              <LinkIcon icon={link.icon} />
               <span>{link.label}</span>
-              <ExternalLinkIcon />
             </a>
           ))}
         </div>
@@ -152,9 +256,47 @@ function ProjectCard({ project }) {
   );
 }
 
-function TechStackSection() {
+function ExperienceCard({ job }) {
+  const [open, setOpen] = useState(false);
+  const ref = useScrollReveal();
   return (
-    <section className="section">
+    <div className="exp-card reveal" ref={ref}>
+      <button className="exp-header" onClick={() => setOpen(!open)} type="button">
+        <div className="exp-header-left">
+          <div className="exp-timeline-dot" />
+          <div>
+            <h3 className="exp-role">{job.role}</h3>
+            <span className="exp-company">{job.company}</span>
+          </div>
+        </div>
+        <div className="exp-header-right">
+          <span className="exp-period">{job.period}</span>
+          <ChevronIcon open={open} />
+        </div>
+      </button>
+      <div className={`exp-body ${open ? "exp-body-open" : ""}`}>
+        <div className="exp-body-inner">
+          <p className="exp-description">{job.description}</p>
+          <ul className="exp-highlights">
+            {job.highlights.map((h) => (
+              <li key={h}>{h}</li>
+            ))}
+          </ul>
+          <div className="exp-tech">
+            {job.tech.map((t) => (
+              <span key={t} className="tech-badge tech-badge-sm">{t}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TechStackSection() {
+  const ref = useScrollReveal();
+  return (
+    <section className="section reveal" id="stack" ref={ref}>
       <h2 className="section-title">Tech Stack</h2>
       <div className="tech-stack">
         {Object.entries(techStack).map(([category, items]) => (
@@ -162,9 +304,7 @@ function TechStackSection() {
             <h4 className="tech-category-name">{category}</h4>
             <div className="tech-badges">
               {items.map((item) => (
-                <span key={item} className="tech-badge">
-                  {item}
-                </span>
+                <span key={item} className="tech-badge">{item}</span>
               ))}
             </div>
           </div>
@@ -174,9 +314,13 @@ function TechStackSection() {
   );
 }
 
+/* ── App ── */
+
 export default function App() {
   return (
     <div className="app">
+      <Nav />
+
       <header className="hero">
         <div className="hero-content">
           <h1 className="hero-name">{name}</h1>
@@ -187,11 +331,20 @@ export default function App() {
       </header>
 
       <main className="container">
-        <section className="section">
+        <section className="section" id="projects">
           <h2 className="section-title">Projects</h2>
           <div className="projects-grid">
             {projects.map((project) => (
               <ProjectCard key={project.name} project={project} />
+            ))}
+          </div>
+        </section>
+
+        <section className="section" id="experience">
+          <h2 className="section-title">Experience</h2>
+          <div className="experience-list">
+            {experience.map((job) => (
+              <ExperienceCard key={job.company} job={job} />
             ))}
           </div>
         </section>
