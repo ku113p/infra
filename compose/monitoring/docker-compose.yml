@@ -39,3 +39,4 @@ networks:
 volumes:
   kuma-data:
   dozzle-data:
+    external: true
