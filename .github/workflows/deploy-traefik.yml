@@ -1,0 +1,54 @@
+name: Deploy Traefik
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'compose/traefik/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Render traefik.yml
+        run: envsubst '${ACME_EMAIL}' < compose/traefik/traefik.yml > /tmp/traefik.yml
+        env:
+          ACME_EMAIL: ${{ secrets.ACME_EMAIL }}
+
+      - name: Render middlewares.yml
+        run: |
+          mkdir -p /tmp/dynamic
+          cp compose/traefik/dynamic/* /tmp/dynamic/
+          envsubst '${ADMIN_HTPASSWD}' < compose/traefik/dynamic/middlewares.yml > /tmp/dynamic/middlewares.yml
+        env:
+          ADMIN_HTPASSWD: ${{ secrets.ADMIN_HTPASSWD }}
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+
+      - name: Add VPS to known hosts
+        run: ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Sync traefik config
+        run: |
+          SERVER="root@${{ secrets.VPS_HOST }}"
+          rsync -avz /tmp/traefik.yml ${SERVER}:/opt/services/traefik/traefik.yml
+          rsync -avz compose/traefik/docker-compose.yml ${SERVER}:/opt/services/traefik/
+          rsync -avz --delete /tmp/dynamic/ ${SERVER}:/opt/services/traefik/dynamic/
+
+      - name: Restart traefik
+        run: |
+          SERVER="root@${{ secrets.VPS_HOST }}"
+          ssh ${SERVER} "cd /opt/services/traefik && docker compose up -d"
+
+      - name: Verify health
+        run: |
+          SERVER="root@${{ secrets.VPS_HOST }}"
+          sleep 5
+          ssh ${SERVER} "docker ps --filter name=traefik --format '{{.Status}}' | grep -q 'Up'" || \
+            (echo "FAIL: traefik not running" && exit 1)
+          ssh ${SERVER} "docker ps --filter name=traefik --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
