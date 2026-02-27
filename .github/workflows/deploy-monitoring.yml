@@ -25,31 +25,29 @@ jobs:
           SERVER="root@${{ secrets.VPS_HOST }}"
           rsync -avz compose/monitoring/docker-compose.yml ${SERVER}:/opt/services/monitoring/
 
-      - name: Seed Dozzle users.yml if missing
+      - name: Write Dozzle users.yml
         env:
           DOZZLE_PASSWORD_HASH: ${{ secrets.DOZZLE_PASSWORD_HASH }}
         run: |
           SERVER="root@${{ secrets.VPS_HOST }}"
 
-          # Check if users.yml already exists on VPS
-          if ssh ${SERVER} "docker volume inspect monitoring_dozzle-data &>/dev/null && \
-            test -f \$(docker volume inspect monitoring_dozzle-data -f '{{.Mountpoint}}')/users.yml"; then
-            echo 'users.yml already exists, skipping'
-          else
-            echo 'Seeding users.yml...'
-            envsubst '${DOZZLE_PASSWORD_HASH}' << 'EOF' > /tmp/dozzle-users.yml
+          if [ -z "${DOZZLE_PASSWORD_HASH}" ]; then
+            echo '::warning::DOZZLE_PASSWORD_HASH secret not set, skipping users.yml'
+            exit 0
+          fi
+
+          envsubst '${DOZZLE_PASSWORD_HASH}' << 'EOF' > /tmp/dozzle-users.yml
           users:
               overuse:
                   name: Overuse
                   password: ${DOZZLE_PASSWORD_HASH}
           EOF
 
-            ssh ${SERVER} "docker volume create monitoring_dozzle-data 2>/dev/null || true"
-            VOLUME_PATH=$(ssh ${SERVER} "docker volume inspect monitoring_dozzle-data -f '{{.Mountpoint}}'")
-            rsync -avz /tmp/dozzle-users.yml ${SERVER}:${VOLUME_PATH}/users.yml
-            rm -f /tmp/dozzle-users.yml
-            echo 'users.yml created'
-          fi
+          ssh ${SERVER} "docker volume create monitoring_dozzle-data 2>/dev/null || true"
+          VOLUME_PATH=$(ssh ${SERVER} "docker volume inspect monitoring_dozzle-data -f '{{.Mountpoint}}'")
+          rsync -avz /tmp/dozzle-users.yml ${SERVER}:${VOLUME_PATH}/users.yml
+          rm -f /tmp/dozzle-users.yml
+          echo 'users.yml written'
 
       - name: Restart monitoring services
         run: |
