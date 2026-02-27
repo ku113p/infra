@@ -42,3 +42,7 @@ log:
 accessLog:
   filePath: /logs/access.log
   bufferingSize: 100
+  filters:
+    statusCodes:
+      - "400-499"
+      - "500-599"

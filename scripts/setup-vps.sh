@@ -41,6 +41,24 @@ chmod 600 "${SERVICES_DIR}/traefik/acme/acme.json"
 
 echo "[OK] Directory structure created at ${SERVICES_DIR}/"
 
+# --- Traefik access log rotation ---
+echo "[*] Configuring Traefik access log rotation..."
+cat > /etc/logrotate.d/traefik << 'LOGROTATE'
+/opt/services/traefik/logs/access.log {
+    daily
+    rotate 14
+    maxsize 50M
+    compress
+    delaycompress
+    missingok
+    notifempty
+    postrotate
+        docker kill --signal=USR1 traefik 2>/dev/null || true
+    endscript
+}
+LOGROTATE
+echo "[OK] Log rotation configured"
+
 # --- Firewall ---
 echo "[*] Configuring firewall..."
 if command -v ufw &>/dev/null; then
