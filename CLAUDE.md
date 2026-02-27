@@ -31,9 +31,9 @@ Infrastructure-as-code repository managing Docker Compose stacks, deployment scr
                       │ proxy network
          ┌────────────┼────────────┬──────────────┐
          v            v            v              v
-      landing      interview    monitoring     watchtower
-      (404)     ┌──────────┐  (uptime-kuma    (image
-                 │ promo    │   + dozzle)       updater)
+      interview    monitoring     watchtower
+   ┌──────────┐  (uptime-kuma    (image
+   │ promo    │   + dozzle)       updater)
                  │ backend  │
                  │ mcp      │
                  └──────────┘

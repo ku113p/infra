@@ -51,6 +51,5 @@ restart-all: ## Restart all stacks
 	@ssh $(SERVER) "\
 		cd $(SERVICES_DIR)/traefik && docker compose up -d && \
 		cd $(SERVICES_DIR)/interview && docker compose up -d && \
-		cd $(SERVICES_DIR)/landing && docker compose up -d && \
 		cd $(SERVICES_DIR)/monitoring && docker compose up -d && \
 		cd $(SERVICES_DIR)/watchtower && docker compose up -d"
