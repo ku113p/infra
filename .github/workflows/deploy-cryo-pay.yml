@@ -23,7 +23,7 @@ jobs:
       - name: Sync compose files
         run: |
           SERVER="root@${{ secrets.VPS_HOST }}"
-          rsync -avz --delete compose/cryo-pay/ ${SERVER}:/opt/services/cryo-pay/ --exclude .env
+          rsync -avz --delete --exclude .env --exclude data/ compose/cryo-pay/ ${SERVER}:/opt/services/cryo-pay/
 
       - name: Restart services
         run: |
