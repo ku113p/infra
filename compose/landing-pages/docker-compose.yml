@@ -1,0 +1,54 @@
+services:
+  app:
+    image: ghcr.io/ku113p/landing-pages:latest
+    container_name: landing-pages-app
+    restart: unless-stopped
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+      REDIS_URL: redis://redis/
+    env_file:
+      - .env
+    networks:
+      - proxy
+      - internal
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "traefik.enable=true"
+      - "traefik.http.routers.landing-pages.rule=Host(`pages.syncapp.tech`)"
+      - "traefik.http.routers.landing-pages.entrypoints=websecure"
+      - "traefik.http.routers.landing-pages.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.landing-pages.middlewares=security-headers@file,gzip@file"
+      - "traefik.http.services.landing-pages.loadbalancer.server.port=3000"
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'server' || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  redis:
+    image: bitnami/redis:latest
+    container_name: landing-pages-redis
+    restart: unless-stopped
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - redis-data:/bitnami/redis/data
+    networks:
+      - internal
+
+networks:
+  proxy:
+    external: true
+  internal:
+    name: landing-pages-internal
+
+volumes:
+  redis-data:
+    name: landing-pages-redis-data

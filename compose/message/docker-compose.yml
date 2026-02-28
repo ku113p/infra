@@ -1,0 +1,66 @@
+services:
+  app:
+    image: ghcr.io/ku113p/message:latest
+    container_name: message-app
+    restart: unless-stopped
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+      POSTGRES_URL: postgres://message:message@postgres/message
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - proxy
+      - internal
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "traefik.enable=true"
+      - "traefik.http.routers.message.rule=Host(`msg.syncapp.tech`)"
+      - "traefik.http.routers.message.entrypoints=websecure"
+      - "traefik.http.routers.message.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.message.middlewares=security-headers@file,gzip@file"
+      - "traefik.http.services.message.loadbalancer.server.port=3000"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'server' || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  postgres:
+    image: postgres:17.4
+    container_name: message-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: message
+      POSTGRES_PASSWORD: message
+      POSTGRES_DB: message
+      POSTGRES_HOST_AUTH_METHOD: md5
+      POSTGRES_INITDB_ARGS: --auth=md5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U message -d message"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  proxy:
+    external: true
+  internal:
+    name: message-internal
+
+volumes:
+  pgdata:
+    name: message-pgdata

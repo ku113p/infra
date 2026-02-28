@@ -1,0 +1,55 @@
+services:
+  app:
+    image: ghcr.io/ku113p/short-links:latest
+    container_name: short-links-app
+    restart: unless-stopped
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+      REDIS_URL: redis://redis/
+      LINK_SCHEME: https
+    env_file:
+      - .env
+    networks:
+      - proxy
+      - internal
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "traefik.enable=true"
+      - "traefik.http.routers.short-links.rule=Host(`links.syncapp.tech`)"
+      - "traefik.http.routers.short-links.entrypoints=websecure"
+      - "traefik.http.routers.short-links.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.short-links.middlewares=security-headers@file,gzip@file"
+      - "traefik.http.services.short-links.loadbalancer.server.port=3000"
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'server' || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  redis:
+    image: bitnami/redis:latest
+    container_name: short-links-redis
+    restart: unless-stopped
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - redis-data:/bitnami/redis/data
+    networks:
+      - internal
+
+networks:
+  proxy:
+    external: true
+  internal:
+    name: short-links-internal
+
+volumes:
+  redis-data:
+    name: short-links-redis-data
