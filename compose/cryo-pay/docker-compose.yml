@@ -1,0 +1,114 @@
+services:
+  api:
+    image: ghcr.io/digitalscyther/cryo-pay-api:latest
+    container_name: cryo-pay-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data:/opt/data:ro
+    networks:
+      - internal
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'server' || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  web:
+    image: ghcr.io/digitalscyther/cryo-pay-web:latest
+    container_name: cryo-pay-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+    networks:
+      - internal
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'serve' || exit 1"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  nginx:
+    image: nginx:1.27.2
+    container_name: cryo-pay-nginx
+    restart: unless-stopped
+    volumes:
+      - ./nginx:/etc/nginx/conf.d:ro
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    networks:
+      - proxy
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cryo-pay.rule=Host(`pay.syncapp.tech`)"
+      - "traefik.http.routers.cryo-pay.entrypoints=websecure"
+      - "traefik.http.routers.cryo-pay.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.cryo-pay.middlewares=security-headers@file,gzip@file"
+      - "traefik.http.services.cryo-pay.loadbalancer.server.port=80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1/ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  postgres:
+    image: postgres:17.4
+    container_name: cryo-pay-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: md5
+      POSTGRES_INITDB_ARGS: --auth=md5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cryo -d cryo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: bitnami/redis:7.4.1
+    container_name: cryo-pay-redis
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - redis-data:/bitnami/redis/data
+    networks:
+      - internal
+
+networks:
+  proxy:
+    external: true
+  internal:
+    name: cryo-pay-internal
+
+volumes:
+  pgdata:
+    name: cryo-pay-pgdata
+  redis-data:
+    name: cryo-pay-redis-data
