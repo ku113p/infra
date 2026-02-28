@@ -3,7 +3,7 @@ const projects = [
     name: "CryoPay",
     description:
       "Blockchain-based payment platform for creating and managing crypto invoices. Supports Optimism and Arbitrum networks with USDT, features Firebase auth, email and Telegram notifications, subscriptions, donations, webhooks, and an API for integration.",
-    tech: ["Rust", "Axum", "React", "PostgreSQL", "Redis", "Solidity", "Docker", "Traefik"],
+    tech: ["Rust", "Axum", "React", "PostgreSQL", "Redis", "Solidity", "Docker"],
     links: [
       { label: "Open App", url: "https://pay.syncapp.tech" },
       {
@@ -17,7 +17,7 @@ const projects = [
     name: "Interview",
     description:
       "AI-powered interview platform that maps your professional experience through conversation. Includes a promo landing page, backend API with LangGraph-driven interview workflows, and an MCP server for tool integration.",
-    tech: ["Python", "FastAPI", "LangGraph", "SQLite", "Docker", "Traefik"],
+    tech: ["Python", "FastAPI", "LangGraph", "SQLite", "Docker"],
     links: [
       { label: "Promo", url: "https://promo.interview.syncapp.tech" },
       {
