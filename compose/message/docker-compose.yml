@@ -18,7 +18,7 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
-      - "traefik.http.routers.message.rule=Host(`msg.syncapp.tech`)"
+      - "traefik.http.routers.message.rule=Host(`msg.tools.syncapp.tech`)"
       - "traefik.http.routers.message.entrypoints=websecure"
       - "traefik.http.routers.message.tls.certresolver=letsencrypt"
       - "traefik.http.routers.message.middlewares=security-headers@file,gzip@file"

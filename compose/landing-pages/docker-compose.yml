@@ -15,7 +15,7 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
-      - "traefik.http.routers.landing-pages.rule=Host(`pages.syncapp.tech`)"
+      - "traefik.http.routers.landing-pages.rule=Host(`pages.tools.syncapp.tech`)"
       - "traefik.http.routers.landing-pages.entrypoints=websecure"
       - "traefik.http.routers.landing-pages.tls.certresolver=letsencrypt"
       - "traefik.http.routers.landing-pages.middlewares=security-headers@file,gzip@file"

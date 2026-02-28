@@ -16,7 +16,7 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
-      - "traefik.http.routers.short-links.rule=Host(`links.syncapp.tech`)"
+      - "traefik.http.routers.short-links.rule=Host(`links.tools.syncapp.tech`)"
       - "traefik.http.routers.short-links.entrypoints=websecure"
       - "traefik.http.routers.short-links.tls.certresolver=letsencrypt"
       - "traefik.http.routers.short-links.middlewares=security-headers@file,gzip@file"
