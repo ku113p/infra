@@ -13,7 +13,7 @@
   --bg-card-hover: #263548;
   --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-muted: #7e8ea8;
   --accent: #2dd4bf;
   --accent-dim: rgba(45, 212, 191, 0.15);
   --border: #334155;
@@ -69,7 +69,7 @@ body {
   height: 56px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 1rem;
 }
 
 .nav-brand {
@@ -87,6 +87,29 @@ body {
 .nav-links {
   display: flex;
   gap: 0.25rem;
+  margin-left: auto;
+}
+
+.nav-pdf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.nav-pdf:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-dim);
 }
 
 .nav-link {
@@ -166,30 +189,6 @@ body {
 }
 
 .contact-link:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-  background: var(--accent-dim);
-}
-
-/* ── PDF Button ── */
-
-.pdf-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 1rem;
-  padding: 0.4rem 0.85rem;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
-}
-
-.pdf-button:hover {
   color: var(--accent);
   border-color: var(--accent);
   background: var(--accent-dim);
@@ -590,6 +589,48 @@ body {
   }
 }
 
+/* ── Footer ── */
+
+.footer {
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+}
+
+.footer-inner {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.footer-pdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.footer-pdf:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
 /* ── Print ── */
 
 @media print {
@@ -608,8 +649,8 @@ body {
     --text-primary: #1e293b;
     --text-secondary: #475569;
     --text-muted: #64748b;
-    --accent: #0d9488;
-    --accent-dim: rgba(13, 148, 136, 0.1);
+    --accent: #0f766e;
+    --accent-dim: rgba(15, 118, 110, 0.1);
     --border: #e2e8f0;
   }
 
@@ -621,7 +662,7 @@ body {
   }
 
   .nav,
-  .pdf-button {
+  .footer {
     display: none !important;
   }
 
@@ -670,9 +711,7 @@ body {
   }
 
   .tech-badge {
-    background: rgba(13, 148, 136, 0.1);
-    color: #0d9488;
-    border: 1px solid rgba(13, 148, 136, 0.2);
+    border: 1px solid rgba(15, 118, 110, 0.2);
   }
 
   .contact-link span {
@@ -687,6 +726,10 @@ body {
     content: " (" attr(href) ")";
     font-size: 0.7rem;
     color: #64748b;
+  }
+
+  .contact-link[href^="mailto:"]::after {
+    content: none;
   }
 
   .sub-project-name-link::after {
