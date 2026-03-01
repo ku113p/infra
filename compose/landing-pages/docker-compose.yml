@@ -42,6 +42,11 @@ services:
       - redis-data:/bitnami/redis/data
     networks:
       - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 networks:
   proxy:
