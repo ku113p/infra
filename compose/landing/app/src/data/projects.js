@@ -14,6 +14,20 @@ const projects = [
     ],
   },
   {
+    name: "Tools Platform",
+    description:
+      "A suite of lightweight developer-tool microservices — URL shortener, HTML page hosting, and a contact form API — unified through an MCP aggregator server for programmatic access.",
+    tech: ["Rust", "Axum", "Redis", "PostgreSQL", "MCP", "Docker"],
+    links: [
+      { label: "MCP Server", url: "https://mcp.tools.syncapp.tech" },
+      {
+        label: "GitHub",
+        url: "https://github.com/ku113p/tools-mcp",
+        icon: "github",
+      },
+    ],
+  },
+  {
     name: "Interview",
     description:
       "AI-powered interview platform that maps your professional experience through conversation. Includes a promo landing page, backend API with LangGraph-driven interview workflows, and an MCP server for tool integration.",

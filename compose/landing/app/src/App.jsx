@@ -5,10 +5,10 @@ import experience from "./data/experience";
 const env = import.meta.env;
 
 const name = env.VITE_NAME || "Ilia Ivanov";
-const title = env.VITE_TITLE || "Python Software Developer";
+const title = env.VITE_TITLE || "Software Developer";
 const bio =
   env.VITE_BIO ||
-  "Backend developer with 8+ years of Python experience. Specializing in high-load APIs, billing systems, analytics platforms, and ML pipelines.";
+  "Software developer with 8+ years of experience building high-load APIs, billing systems, and developer tools. Working across Python, Rust, and Go — from microservice architectures to ML pipelines.";
 const email = env.VITE_EMAIL || "";
 const telegram = env.VITE_TELEGRAM || "";
 const linkedin = env.VITE_LINKEDIN || "";
@@ -22,6 +22,7 @@ const techStack = {
     "Flask",
     "Django",
     "Celery",
+    "Axum",
     "LangChain",
     "LangGraph",
   ],
