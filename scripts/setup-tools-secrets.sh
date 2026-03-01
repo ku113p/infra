@@ -80,8 +80,10 @@ echo '    }'
 echo '  }'
 echo '}'
 echo ""
-echo "Now restart all 4 services:"
-echo "  cd ${SERVICES_DIR}/short-links && docker compose up -d"
-echo "  cd ${SERVICES_DIR}/landing-pages && docker compose up -d"
-echo "  cd ${SERVICES_DIR}/message && docker compose up -d"
-echo "  cd ${SERVICES_DIR}/tools-mcp && docker compose up -d"
+echo "Restarting services to pick up new tokens..."
+for svc in short-links landing-pages message tools-mcp; do
+    echo "  Restarting ${svc}..."
+    docker compose -f "${SERVICES_DIR}/${svc}/docker-compose.yml" up -d
+done
+echo ""
+echo "All services restarted with new tokens."

@@ -100,7 +100,7 @@ Fully automated via per-stack GitHub Actions workflows on push to `master` (`.gi
 
 Scripts in `scripts/`:
 - `setup-vps.sh` — one-time VPS provisioning (Docker, firewall, directory structure, log rotation)
-- `setup-tools-secrets.sh` — generates `AUTH_TOKEN`, `MCP_AUTH_TOKEN`, and `REDIS_PASSWORD` for tools services. Writes `.env` files to each service directory on VPS.
+- `setup-tools-secrets.sh` — generates `AUTH_TOKEN`, `MCP_AUTH_TOKEN`, and `REDIS_PASSWORD` for tools services. Writes `.env` files to each service directory on VPS, then auto-restarts all 4 tools services so containers pick up the new tokens.
 
 A `Makefile` provides shortcuts for common operations (`make help`).
 
@@ -111,6 +111,10 @@ A `Makefile` provides shortcuts for common operations (`make help`).
 - **Postgres**: `pg_isready -U <user> -d <db>`
 - **Redis with auth**: `redis-cli -a $REDIS_PASSWORD ping`
 - **PgBouncer**: `pgrep pgbouncer`
+
+## Troubleshooting
+
+- **tools-mcp returns 401**: Likely stale auth tokens — the running containers have old tokens while `.env` files have new ones. Re-run `setup-tools-secrets.sh` (which auto-restarts services), or manually restart the backend services: `docker compose -f /opt/services/<svc>/docker-compose.yml up -d` for short-links, landing-pages, message, and tools-mcp.
 
 ## Conventions
 
