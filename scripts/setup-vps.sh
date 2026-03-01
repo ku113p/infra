@@ -31,6 +31,14 @@ cat > /etc/docker/daemon.json << 'EOF'
 EOF
 systemctl restart docker
 
+# --- Redis kernel tuning ---
+echo "[*] Setting vm.overcommit_memory for Redis..."
+if ! grep -q 'vm.overcommit_memory' /etc/sysctl.conf; then
+    echo "vm.overcommit_memory = 1" >> /etc/sysctl.conf
+fi
+sysctl vm.overcommit_memory=1
+echo "[OK] vm.overcommit_memory = 1"
+
 # --- Directory structure ---
 echo "[*] Creating directory structure..."
 mkdir -p "${SERVICES_DIR}"/{traefik/{dynamic,acme,logs},landing,interview/{backend,promo-dist,data},monitoring,price-alert-bot,cryo-pay/{nginx,data},backup}

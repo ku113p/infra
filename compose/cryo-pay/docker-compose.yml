@@ -96,6 +96,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     volumes:
       - redis-data:/bitnami/redis/data
     networks:

@@ -8,7 +8,8 @@ SERVER := root@$(VPS_HOST)
 SERVICES_DIR := /opt/services
 
 .PHONY: help status health stats logs logs-traefik logs-service \
-	restart-interview restart-traefik restart-monitoring restart-landing restart-cryo-pay restart-all
+	restart-interview restart-traefik restart-monitoring restart-landing restart-cryo-pay restart-tools-mcp \
+	setup-tools-secrets restart-all
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -53,6 +54,12 @@ restart-landing: ## Restart landing page
 restart-cryo-pay: ## Restart cryo-pay stack
 	@ssh $(SERVER) "cd $(SERVICES_DIR)/cryo-pay && docker compose up -d"
 
+restart-tools-mcp: ## Restart tools-mcp server
+	@ssh $(SERVER) "cd $(SERVICES_DIR)/tools-mcp && docker compose up -d"
+
+setup-tools-secrets: ## Generate auth tokens for tools services on VPS
+	@ssh $(SERVER) 'bash -s' < scripts/setup-tools-secrets.sh
+
 restart-all: ## Restart all stacks
 	@ssh $(SERVER) "\
 		cd $(SERVICES_DIR)/traefik && docker compose up -d && \
@@ -60,4 +67,5 @@ restart-all: ## Restart all stacks
 		cd $(SERVICES_DIR)/interview && docker compose up -d && \
 		cd $(SERVICES_DIR)/monitoring && docker compose up -d && \
 		cd $(SERVICES_DIR)/watchtower && docker compose up -d && \
-		cd $(SERVICES_DIR)/cryo-pay && docker compose up -d"
+		cd $(SERVICES_DIR)/cryo-pay && docker compose up -d && \
+		cd $(SERVICES_DIR)/tools-mcp && docker compose up -d"
