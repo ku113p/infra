@@ -71,7 +71,7 @@ echo "Add to your .mcp.json:"
 echo '{'
 echo '  "mcpServers": {'
 echo '    "tools": {'
-echo '      "type": "streamable-http",'
+echo '      "type": "http",'
 echo "      \"url\": \"https://mcp.tools.syncapp.tech/mcp\","
 echo '      "headers": {'
 echo "        \"Authorization\": \"Bearer ${MCP_AUTH_TOKEN}\""
