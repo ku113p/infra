@@ -171,6 +171,30 @@ body {
   background: var(--accent-dim);
 }
 
+/* ── PDF Button ── */
+
+.pdf-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  padding: 0.4rem 0.85rem;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.pdf-button:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
 /* ── Container ── */
 
 .container {
@@ -322,23 +346,34 @@ body {
   flex-shrink: 0;
 }
 
-.sub-project-name {
+.sub-project-name-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.sub-project-name-link svg {
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+.sub-project-name-link:hover {
+  color: var(--accent);
+}
+
+.sub-project-name-link:hover svg {
+  opacity: 1;
 }
 
 .sub-project-description {
   color: var(--text-secondary);
   font-size: 0.8rem;
-  margin-bottom: 0.5rem;
-  padding-left: 0.875rem;
-}
-
-.sub-project-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  margin-bottom: 0;
   padding-left: 0.875rem;
 }
 
@@ -528,8 +563,16 @@ body {
     display: none;
   }
 
+  .contact-link-github span {
+    display: inline;
+  }
+
   .contact-link {
     padding: 0.5rem;
+  }
+
+  .contact-link-github {
+    padding: 0.4rem 0.85rem;
   }
 
   .exp-header {
@@ -544,5 +587,120 @@ body {
 
   .nav-inner {
     padding: 0 1.25rem;
+  }
+}
+
+/* ── Print ── */
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-hover: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --accent: #0d9488;
+    --accent-dim: rgba(13, 148, 136, 0.1);
+    --border: #e2e8f0;
+  }
+
+  body {
+    background: #ffffff;
+    color: #1e293b;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .nav,
+  .pdf-button {
+    display: none !important;
+  }
+
+  .hero {
+    background: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem 0 1.5rem;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .exp-body {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .chevron {
+    display: none;
+  }
+
+  .exp-header {
+    cursor: default;
+  }
+
+  .project-card,
+  .exp-card {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .project-card:hover,
+  .exp-card:hover {
+    border-color: #e2e8f0;
+    background: #ffffff;
+    box-shadow: none !important;
+  }
+
+  .section {
+    break-before: auto;
+    page-break-before: auto;
+  }
+
+  .tech-badge {
+    background: rgba(13, 148, 136, 0.1);
+    color: #0d9488;
+    border: 1px solid rgba(13, 148, 136, 0.2);
+  }
+
+  .contact-link span {
+    display: inline !important;
+  }
+
+  .contact-link {
+    padding: 0.4rem 0.85rem !important;
+  }
+
+  .contact-link::after {
+    content: " (" attr(href) ")";
+    font-size: 0.7rem;
+    color: #64748b;
+  }
+
+  .sub-project-name-link::after {
+    content: " (" attr(href) ")";
+    font-size: 0.7rem;
+    color: #64748b;
+    font-weight: 400;
+  }
+
+  .container {
+    max-width: 100%;
+  }
+
+  .hero-content {
+    max-width: 100%;
   }
 }

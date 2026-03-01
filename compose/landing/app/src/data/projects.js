@@ -19,7 +19,6 @@ const projects = [
       "A suite of lightweight developer-tool microservices — URL shortener, HTML page hosting, and a contact form API — unified through an MCP aggregator server for programmatic access.",
     tech: ["Rust", "Axum", "Redis", "PostgreSQL", "MCP", "Docker"],
     links: [
-      { label: "MCP Server", url: "https://mcp.tools.syncapp.tech" },
       {
         label: "GitHub",
         url: "https://github.com/ku113p/tools-mcp",
@@ -30,26 +29,17 @@ const projects = [
       {
         name: "Short Links",
         description: "URL shortener microservice.",
-        links: [
-          { label: "Live", url: "https://links.tools.syncapp.tech" },
-          { label: "GitHub", url: "https://github.com/ku113p/short-links", icon: "github" },
-        ],
+        github: "https://github.com/ku113p/short-links",
       },
       {
         name: "Landing Pages",
         description: "HTML page hosting microservice.",
-        links: [
-          { label: "Live", url: "https://pages.tools.syncapp.tech" },
-          { label: "GitHub", url: "https://github.com/ku113p/landing-pages", icon: "github" },
-        ],
+        github: "https://github.com/ku113p/landing-pages",
       },
       {
         name: "Message",
         description: "Contact form API microservice.",
-        links: [
-          { label: "Live", url: "https://msg.tools.syncapp.tech" },
-          { label: "GitHub", url: "https://github.com/ku113p/message", icon: "github" },
-        ],
+        github: "https://github.com/ku113p/message",
       },
     ],
   },
