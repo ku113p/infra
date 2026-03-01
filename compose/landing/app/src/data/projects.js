@@ -26,6 +26,32 @@ const projects = [
         icon: "github",
       },
     ],
+    subProjects: [
+      {
+        name: "Short Links",
+        description: "URL shortener microservice.",
+        links: [
+          { label: "Live", url: "https://links.tools.syncapp.tech" },
+          { label: "GitHub", url: "https://github.com/ku113p/short-links", icon: "github" },
+        ],
+      },
+      {
+        name: "Landing Pages",
+        description: "HTML page hosting microservice.",
+        links: [
+          { label: "Live", url: "https://pages.tools.syncapp.tech" },
+          { label: "GitHub", url: "https://github.com/ku113p/landing-pages", icon: "github" },
+        ],
+      },
+      {
+        name: "Message",
+        description: "Contact form API microservice.",
+        links: [
+          { label: "Live", url: "https://msg.tools.syncapp.tech" },
+          { label: "GitHub", url: "https://github.com/ku113p/message", icon: "github" },
+        ],
+      },
+    ],
   },
   {
     name: "Interview",

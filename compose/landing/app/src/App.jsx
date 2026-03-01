@@ -253,12 +253,34 @@ function ProjectCard({ project }) {
           ))}
         </div>
       )}
+      {project.subProjects && (
+        <div className="sub-projects">
+          <span className="sub-projects-label">Services</span>
+          {project.subProjects.map((sub) => (
+            <div key={sub.name} className="sub-project-item">
+              <div className="sub-project-header">
+                <div className="sub-project-dot" />
+                <span className="sub-project-name">{sub.name}</span>
+              </div>
+              <p className="sub-project-description">{sub.description}</p>
+              <div className="sub-project-links">
+                {sub.links.map((link) => (
+                  <a key={link.url} href={link.url} className="project-link" target="_blank" rel="noopener noreferrer">
+                    <LinkIcon icon={link.icon} />
+                    <span>{link.label}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 function ExperienceCard({ job }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const ref = useScrollReveal();
   return (
     <div className="exp-card reveal" ref={ref}>
