@@ -32,12 +32,6 @@ services:
       - "traefik.http.routers.logs.entrypoints=websecure"
       - "traefik.http.routers.logs.tls.certresolver=letsencrypt"
       - "traefik.http.services.logs.loadbalancer.server.port=8080"
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8080/healthcheck"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-
 networks:
   proxy:
     external: true
