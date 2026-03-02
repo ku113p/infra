@@ -75,6 +75,20 @@ const projects = [
       },
     ],
   },
+  {
+    name: "Crypto Assets",
+    description:
+      "DeFi portfolio tracker for managing token balances, protocol allocations, and analytics. Lightweight HTMX interface with real-time server-side rendering.",
+    tech: ["Rust", "Axum", "HTMX", "Docker"],
+    links: [
+      { label: "Open App", url: "https://assets.crypto.syncapp.tech" },
+      {
+        label: "GitHub",
+        url: "https://github.com/ku113p/crypto-assets",
+        icon: "github",
+      },
+    ],
+  },
 ];
 
 export default projects;

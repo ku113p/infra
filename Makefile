@@ -9,7 +9,7 @@ SERVICES_DIR := /opt/services
 
 .PHONY: help status health stats logs logs-traefik logs-service \
 	restart-interview restart-traefik restart-monitoring restart-landing restart-cryo-pay restart-tools-mcp \
-	setup-tools-secrets restart-all
+	restart-crypto-assets setup-tools-secrets restart-all
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -57,6 +57,9 @@ restart-cryo-pay: ## Restart cryo-pay stack
 restart-tools-mcp: ## Restart tools-mcp server
 	@ssh $(SERVER) "cd $(SERVICES_DIR)/tools-mcp && docker compose up -d"
 
+restart-crypto-assets: ## Restart crypto-assets
+	@ssh $(SERVER) "cd $(SERVICES_DIR)/crypto-assets && docker compose up -d"
+
 setup-tools-secrets: ## Generate auth tokens for tools services on VPS
 	@ssh $(SERVER) 'bash -s' < scripts/setup-tools-secrets.sh
 
@@ -68,4 +71,5 @@ restart-all: ## Restart all stacks
 		cd $(SERVICES_DIR)/monitoring && docker compose up -d && \
 		cd $(SERVICES_DIR)/watchtower && docker compose up -d && \
 		cd $(SERVICES_DIR)/cryo-pay && docker compose up -d && \
+		cd $(SERVICES_DIR)/crypto-assets && docker compose up -d && \
 		cd $(SERVICES_DIR)/tools-mcp && docker compose up -d"

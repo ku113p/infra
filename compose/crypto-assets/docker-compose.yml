@@ -1,0 +1,39 @@
+services:
+  app:
+    image: ghcr.io/ku113p/crypto-assets:latest
+    container_name: crypto-assets
+    restart: unless-stopped
+    environment:
+      STORAGE_PATH: /app/data/storage.bin
+      RUST_LOG: info
+    volumes:
+      - app-data:/app/data
+    networks:
+      - proxy
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "traefik.enable=true"
+      - "traefik.http.routers.crypto-assets.rule=Host(`assets.crypto.syncapp.tech`)"
+      - "traefik.http.routers.crypto-assets.entrypoints=websecure"
+      - "traefik.http.routers.crypto-assets.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.crypto-assets.middlewares=security-headers@file,gzip@file"
+      - "traefik.http.services.crypto-assets.loadbalancer.server.port=3999"
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3999/ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  app-data:
+    name: crypto-assets-data

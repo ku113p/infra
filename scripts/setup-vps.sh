@@ -41,7 +41,7 @@ echo "[OK] vm.overcommit_memory = 1"
 
 # --- Directory structure ---
 echo "[*] Creating directory structure..."
-mkdir -p "${SERVICES_DIR}"/{traefik/{dynamic,acme,logs},landing,interview/{backend,promo-dist,data},monitoring,price-alert-bot,cryo-pay/{nginx,data},backup}
+mkdir -p "${SERVICES_DIR}"/{traefik/{dynamic,acme,logs},landing,interview/{backend,promo-dist,data},monitoring,price-alert-bot,cryo-pay/{nginx,data},crypto-assets,backup}
 
 # Traefik cert file (must exist with strict permissions)
 touch "${SERVICES_DIR}/traefik/acme/acme.json"

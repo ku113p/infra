@@ -29,12 +29,12 @@ Infrastructure-as-code repository managing Docker Compose stacks, deployment scr
               │   (port 80/443) │
               └───────┬─────────┘
                       │ proxy network
-    ┌───────┬─────┼──────────┼─────────┬──────────┬──────────────┐
-    v       v     v          v         v          v              v
- landing  tools services  interview  cryo-pay  monitoring  price-alert-bot
- (React   ┌────────────┐ ┌────────┐ (api+web  (uptime-    (Telegram bot +
-  SPA)    │short-links │ │ promo  │  +nginx    kuma +      Postgres +
-          │landing-page│ │backend │  +postgres  dozzle)     PgBouncer)
+    ┌───────┬─────┼──────────┼─────────┬──────────┬──────────────┬───────────────┐
+    v       v     v          v         v          v              v               v
+ landing  tools services  interview  cryo-pay  monitoring  price-alert-bot  crypto-assets
+ (React   ┌────────────┐ ┌────────┐ (api+web  (uptime-    (Telegram bot +  (Rust/Axum +
+  SPA)    │short-links │ │ promo  │  +nginx    kuma +      Postgres +       HTMX, bincode
+          │landing-page│ │backend │  +postgres  dozzle)     PgBouncer)       file storage)
           │message     │ │ mcp    │  +redis)
           │tools-mcp   │ └────────┘
           └────────────┘
@@ -71,6 +71,9 @@ Infrastructure-as-code repository managing Docker Compose stacks, deployment scr
 - **app** — Telegram bot for crypto price alerts (CoinMarketCap API), 0.5 CPU / 256MB
 - **db** — PostgreSQL 17.4 with PgBouncer connection pooling
 - Reads from `.env` on the VPS (`TG_API_TOKEN`, `CMC_API_KEY`, `DATABASE_URL`, `UPDATE_INTERVAL_MS`)
+
+**Crypto Assets** (`assets.crypto.syncapp.tech`):
+- **app** — DeFi portfolio tracker (Rust/Axum + HTMX + bincode file storage). 0.25 CPU / 128MB.
 
 **Monitoring** (`monitor.syncapp.tech`, `logs.syncapp.tech`):
 - **uptime-kuma** — uptime monitoring dashboard
