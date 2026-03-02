@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     environment:
       STORAGE_PATH: /app/data/storage.bin
-      RUST_LOG: info
+      RUST_LOG: info,reqwest=debug
     volumes:
       - app-data:/app/data
     networks:
