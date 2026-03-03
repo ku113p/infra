@@ -46,8 +46,8 @@ const techStack = {
 };
 
 const sections = [
-  { id: "projects", label: "Projects" },
   { id: "experience", label: "Experience" },
+  { id: "projects", label: "Projects" },
   { id: "stack", label: "Stack" },
 ];
 
@@ -91,6 +91,46 @@ function useActiveSection() {
     return () => observer.disconnect();
   }, []);
   return active;
+}
+
+const themeMetaTag = document.querySelector('meta[name="theme-color"]');
+
+function useTheme() {
+  const [theme, setTheme] = useState(() => {
+    return document.documentElement.getAttribute("data-theme") || "dark";
+  });
+
+  useEffect(() => {
+    // Remove no-transition class after mount to enable smooth transitions
+    requestAnimationFrame(() => {
+      document.documentElement.classList.remove("no-transition");
+    });
+  }, []);
+
+  useEffect(() => {
+    // Listen for system preference changes (only when no explicit user preference)
+    const mq = window.matchMedia("(prefers-color-scheme: light)");
+    function handleChange(e) {
+      if (!localStorage.getItem("theme")) {
+        const newTheme = e.matches ? "light" : "dark";
+        setTheme(newTheme);
+        document.documentElement.setAttribute("data-theme", newTheme);
+        if (themeMetaTag) themeMetaTag.setAttribute("content", newTheme === "light" ? "#ffffff" : "#0f172a");
+      }
+    }
+    mq.addEventListener("change", handleChange);
+    return () => mq.removeEventListener("change", handleChange);
+  }, []);
+
+  function toggleTheme() {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+    if (themeMetaTag) themeMetaTag.setAttribute("content", newTheme === "light" ? "#ffffff" : "#0f172a");
+  }
+
+  return { theme, toggleTheme };
 }
 
 /* ── Icons ── */
@@ -167,6 +207,32 @@ function DownloadIcon() {
   );
 }
 
+function SunIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2" />
+      <path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" />
+      <path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" />
+      <path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" />
+      <path d="m19.07 4.93-1.41 1.41" />
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+    </svg>
+  );
+}
+
 function LinkIcon({ icon }) {
   if (icon === "github") return <GitHubIcon />;
   if (icon === "telegram") return <TelegramIcon />;
@@ -175,7 +241,7 @@ function LinkIcon({ icon }) {
 
 /* ── Navigation ── */
 
-function Nav() {
+function Nav({ theme, toggleTheme }) {
   const active = useActiveSection();
   return (
     <nav className="nav">
@@ -195,9 +261,14 @@ function Nav() {
             </a>
           ))}
         </div>
-        <button className="nav-pdf" onClick={() => window.print()} type="button" title="Save as PDF" aria-label="Save as PDF">
-          <DownloadIcon />
-        </button>
+        <div className="nav-actions">
+          <button className="nav-theme" onClick={toggleTheme} type="button" aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
+            {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+          </button>
+          <button className="nav-pdf" onClick={() => window.print()} type="button" title="Save as PDF" aria-label="Save as PDF">
+            <DownloadIcon />
+          </button>
+        </div>
       </div>
     </nav>
   );
@@ -248,43 +319,53 @@ function ContactLinks() {
 }
 
 function ProjectCard({ project }) {
+  const [open, setOpen] = useState(false);
   const ref = useScrollReveal();
   return (
     <div className="project-card reveal" ref={ref}>
-      <h3 className="project-name">{project.name}</h3>
-      <p className="project-description">{project.description}</p>
-      <div className="project-tech">
-        {project.tech.map((t) => (
-          <span key={t} className="tech-badge">{t}</span>
-        ))}
-      </div>
-      {project.links.length > 0 && (
-        <div className="project-links">
-          {project.links.map((link) => (
-            <a key={link.url} href={link.url} className="project-link" target="_blank" rel="noopener noreferrer">
-              <LinkIcon icon={link.icon} />
-              <span>{link.label}</span>
-            </a>
-          ))}
+      <button className="project-header" onClick={() => setOpen(!open)} type="button" aria-expanded={open}>
+        <div className="project-header-left">
+          <h3 className="project-name">{project.name}</h3>
+          <div className="project-tech">
+            {project.tech.map((t) => (
+              <span key={t} className="tech-badge">{t}</span>
+            ))}
+          </div>
         </div>
-      )}
-      {project.subProjects && (
-        <div className="sub-projects">
-          <span className="sub-projects-label">Services</span>
-          {project.subProjects.map((sub) => (
-            <div key={sub.name} className="sub-project-item">
-              <div className="sub-project-header">
-                <div className="sub-project-dot" />
-                <a href={sub.github} className="sub-project-name-link" target="_blank" rel="noopener noreferrer">
-                  {sub.name}
-                  <GitHubIcon />
+        <ChevronIcon open={open} />
+      </button>
+      <div className={`project-body ${open ? "project-body-open" : ""}`}>
+        <div className="project-body-inner">
+          <p className="project-description">{project.description}</p>
+          {project.links.length > 0 && (
+            <div className="project-links">
+              {project.links.map((link) => (
+                <a key={link.url} href={link.url} className="project-link" target="_blank" rel="noopener noreferrer">
+                  <LinkIcon icon={link.icon} />
+                  <span>{link.label}</span>
                 </a>
-              </div>
-              <p className="sub-project-description">{sub.description}</p>
+              ))}
             </div>
-          ))}
+          )}
+          {project.subProjects && (
+            <div className="sub-projects">
+              <span className="sub-projects-label">Services</span>
+              {project.subProjects.map((sub) => (
+                <div key={sub.name} className="sub-project-item">
+                  <div className="sub-project-header">
+                    <div className="sub-project-dot" />
+                    <a href={sub.github} className="sub-project-name-link" target="_blank" rel="noopener noreferrer">
+                      {sub.name}
+                      <GitHubIcon />
+                    </a>
+                  </div>
+                  <p className="sub-project-description">{sub.description}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -294,7 +375,7 @@ function ExperienceCard({ job }) {
   const ref = useScrollReveal();
   return (
     <div className="exp-card reveal" ref={ref}>
-      <button className="exp-header" onClick={() => setOpen(!open)} type="button">
+      <button className="exp-header" onClick={() => setOpen(!open)} type="button" aria-expanded={open}>
         <div className="exp-header-left">
           <div className="exp-timeline-dot" />
           <div>
@@ -366,9 +447,10 @@ function Footer() {
 /* ── App ── */
 
 export default function App() {
+  const { theme, toggleTheme } = useTheme();
   return (
     <div className="app">
-      <Nav />
+      <Nav theme={theme} toggleTheme={toggleTheme} />
 
       <header className="hero">
         <div className="hero-content">
@@ -380,20 +462,20 @@ export default function App() {
       </header>
 
       <main className="container">
-        <section className="section" id="projects">
-          <h2 className="section-title">Projects</h2>
-          <div className="projects-grid">
-            {projects.map((project) => (
-              <ProjectCard key={project.name} project={project} />
-            ))}
-          </div>
-        </section>
-
         <section className="section" id="experience">
           <h2 className="section-title">Experience</h2>
           <div className="experience-list">
             {experience.map((job) => (
               <ExperienceCard key={job.company} job={job} />
+            ))}
+          </div>
+        </section>
+
+        <section className="section" id="projects">
+          <h2 className="section-title">Projects</h2>
+          <div className="projects-grid">
+            {projects.map((project) => (
+              <ProjectCard key={project.name} project={project} />
             ))}
           </div>
         </section>
