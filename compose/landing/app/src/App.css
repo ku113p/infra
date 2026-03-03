@@ -340,7 +340,7 @@ body {
   overflow: hidden;
 }
 
-.project-body-inner {
+.project-body-content {
   padding: 0 1.5rem 1.25rem;
 }
 
@@ -570,7 +570,7 @@ body {
   overflow: hidden;
 }
 
-.exp-body-inner {
+.exp-body-content {
   padding: 0 1.25rem 1.25rem 2.75rem;
 }
 
@@ -691,7 +691,7 @@ body {
     padding: 1rem 1.25rem;
   }
 
-  .project-body-inner {
+  .project-body-content {
     padding: 0 1.25rem 1rem;
   }
 }

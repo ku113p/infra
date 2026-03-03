@@ -336,6 +336,7 @@ function ProjectCard({ project }) {
       </button>
       <div className={`project-body ${open ? "project-body-open" : ""}`}>
         <div className="project-body-inner">
+         <div className="project-body-content">
           <p className="project-description">{project.description}</p>
           {project.links.length > 0 && (
             <div className="project-links">
@@ -364,6 +365,7 @@ function ProjectCard({ project }) {
               ))}
             </div>
           )}
+         </div>
         </div>
       </div>
     </div>
@@ -390,16 +392,18 @@ function ExperienceCard({ job }) {
       </button>
       <div className={`exp-body ${open ? "exp-body-open" : ""}`}>
         <div className="exp-body-inner">
-          <p className="exp-description">{job.description}</p>
-          <ul className="exp-highlights">
-            {job.highlights.map((h) => (
-              <li key={h}>{h}</li>
-            ))}
-          </ul>
-          <div className="exp-tech">
-            {job.tech.map((t) => (
-              <span key={t} className="tech-badge tech-badge-sm">{t}</span>
-            ))}
+          <div className="exp-body-content">
+            <p className="exp-description">{job.description}</p>
+            <ul className="exp-highlights">
+              {job.highlights.map((h) => (
+                <li key={h}>{h}</li>
+              ))}
+            </ul>
+            <div className="exp-tech">
+              {job.tech.map((t) => (
+                <span key={t} className="tech-badge tech-badge-sm">{t}</span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
