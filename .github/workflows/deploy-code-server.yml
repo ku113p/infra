@@ -36,7 +36,8 @@ jobs:
             exit 0
           fi
 
-          printf 'PASSWORD=%s\n' "${CODE_SERVER_PASSWORD}" | ssh ${SERVER} "cat > /opt/services/code-server/.env"
+          ESCAPED=$(echo "${CODE_SERVER_PASSWORD}" | sed 's/\$/\$\$/g')
+          printf 'PASSWORD=%s\n' "${ESCAPED}" | ssh ${SERVER} "cat > /opt/services/code-server/.env"
 
       - name: Restart code-server
         run: |
