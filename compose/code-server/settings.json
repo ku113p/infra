@@ -10,6 +10,7 @@
     "**/node_modules/**": true,
     "**/.git/objects/**": true
   },
+  "chat.disableAIFeatures": true,
   "chat.commandCenter.enabled": false,
   "inlineChat.enabled": false,
   "github.copilot.enable": { "*": false },
