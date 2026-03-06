@@ -29,11 +29,11 @@ Infrastructure-as-code repository managing Docker Compose stacks, deployment scr
               │   (port 80/443) │
               └───────┬─────────┘
                       │ proxy network
-    ┌───────┬─────┼──────────┼─────────┬──────────┬──────────────┬───────────────┐
-    v       v     v          v         v          v              v               v
- landing  tools services  interview  cryo-pay  monitoring  price-alert-bot  crypto-assets
- (React   ┌────────────┐ ┌────────┐ (api+web  (uptime-    (Telegram bot +  (Rust/Axum +
-  SPA)    │short-links │ │ promo  │  +nginx    kuma +      Postgres +       HTMX, bincode
+    ┌───────┬─────┼──────────┼─────────┬──────────┬──────────────┬───────────────┬─────────────┐
+    v       v     v          v         v          v              v               v             v
+ landing  tools services  interview  cryo-pay  monitoring  price-alert-bot  crypto-assets  code-server
+ (React   ┌────────────┐ ┌────────┐ (api+web  (uptime-    (Telegram bot +  (Rust/Axum +   (VS Code
+  SPA)    │short-links │ │ promo  │  +nginx    kuma +      Postgres +       HTMX, bincode   web IDE)
           │landing-page│ │backend │  +postgres  dozzle)     PgBouncer)       file storage)
           │message     │ │ mcp    │  +redis)
           │tools-mcp   │ └────────┘
@@ -75,6 +75,9 @@ Infrastructure-as-code repository managing Docker Compose stacks, deployment scr
 **Crypto Assets** (`assets.crypto.syncapp.tech`):
 - **app** — DeFi portfolio tracker (Rust/Axum + HTMX + bincode file storage). 0.25 CPU / 128MB.
 
+**Code Server** (`code.dev.syncapp.tech`):
+- **code-server** — VS Code web IDE (linuxserver/code-server). 2 CPU / 4GB. Password-protected via `CODE_SERVER_PASSWORD` GitHub secret.
+
 **Monitoring** (`monitor.syncapp.tech`, `logs.syncapp.tech`):
 - **uptime-kuma** — uptime monitoring dashboard
 - **dozzle** — Docker log viewer (password-protected)
@@ -99,7 +102,7 @@ Fully automated via per-stack GitHub Actions workflows on push to `master` (`.gi
 3. Runs `docker compose up -d` via SSH
 4. Verifies containers are healthy
 
-**Required GitHub secrets**: `VPS_HOST`, `VPS_SSH_KEY` (ed25519), `ACME_EMAIL`, `DOZZLE_PASSWORD_HASH`, `LANDING_NAME`, `LANDING_TITLE`, `LANDING_BIO`, `LANDING_EMAIL`, `LANDING_TELEGRAM`, `LANDING_LINKEDIN`
+**Required GitHub secrets**: `VPS_HOST`, `VPS_SSH_KEY` (ed25519), `ACME_EMAIL`, `DOZZLE_PASSWORD_HASH`, `CODE_SERVER_PASSWORD`, `LANDING_NAME`, `LANDING_TITLE`, `LANDING_BIO`, `LANDING_EMAIL`, `LANDING_TELEGRAM`, `LANDING_LINKEDIN`
 
 Scripts in `scripts/`:
 - `setup-vps.sh` — one-time VPS provisioning (Docker, firewall, directory structure, log rotation)

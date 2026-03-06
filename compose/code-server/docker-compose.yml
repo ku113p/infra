@@ -1,0 +1,43 @@
+services:
+  code-server:
+    image: linuxserver/code-server:latest
+    container_name: code-server
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - DEFAULT_WORKSPACE=/workspace
+    env_file: .env
+    volumes:
+      - config:/config
+      - workspace:/workspace
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.code-server.rule=Host(`code.dev.syncapp.tech`)"
+      - "traefik.http.routers.code-server.entrypoints=websecure"
+      - "traefik.http.routers.code-server.tls.certresolver=letsencrypt"
+      - "traefik.http.services.code-server.loadbalancer.server.port=8443"
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8443/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  config:
+    name: code-server-config
+  workspace:
+    name: code-server-workspace
+
+networks:
+  proxy:
+    external: true
