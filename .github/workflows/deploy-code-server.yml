@@ -36,9 +36,7 @@ jobs:
             exit 0
           fi
 
-          ssh ${SERVER} "cat > /opt/services/code-server/.env << 'ENVEOF'
-          PASSWORD=${CODE_SERVER_PASSWORD}
-          ENVEOF"
+          printf 'PASSWORD=%s\n' "${CODE_SERVER_PASSWORD}" | ssh ${SERVER} "cat > /opt/services/code-server/.env"
 
       - name: Restart code-server
         run: |
