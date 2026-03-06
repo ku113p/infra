@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - 'compose/code-server/**'
+  workflow_dispatch:
 
 jobs:
   deploy:
