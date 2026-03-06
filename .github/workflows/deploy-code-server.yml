@@ -23,7 +23,7 @@ jobs:
       - name: Sync code-server compose file
         run: |
           SERVER="root@${{ secrets.VPS_HOST }}"
-          rsync -avz compose/code-server/docker-compose.yml compose/code-server/settings.json compose/code-server/init-workspace.sh ${SERVER}:/opt/services/code-server/
+          rsync -avz --delete --exclude .env compose/code-server/ ${SERVER}:/opt/services/code-server/
 
       - name: Write .env file
         env:
@@ -42,7 +42,7 @@ jobs:
       - name: Restart code-server
         run: |
           SERVER="root@${{ secrets.VPS_HOST }}"
-          ssh ${SERVER} "cd /opt/services/code-server && docker compose up -d"
+          ssh ${SERVER} "cd /opt/services/code-server && docker compose up -d && docker compose restart"
 
       - name: Verify health
         run: |
