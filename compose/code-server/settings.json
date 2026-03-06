@@ -9,5 +9,9 @@
   "files.watcherExclude": {
     "**/node_modules/**": true,
     "**/.git/objects/**": true
-  }
+  },
+  "chat.commandCenter.enabled": false,
+  "inlineChat.enabled": false,
+  "github.copilot.enable": { "*": false },
+  "github.copilot.editor.enableAutoCompletions": false
 }
