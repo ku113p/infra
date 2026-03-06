@@ -8,10 +8,13 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
       - DEFAULT_WORKSPACE=/workspace
+      - PROXY_DOMAIN=code.dev.syncapp.tech
+      - VSCODE_PROXY_URI=https://code.dev.syncapp.tech/proxy/{{port}}/
     env_file: .env
     volumes:
       - config:/config
       - workspace:/workspace
+      - ./init-workspace.sh:/custom-cont-init.d/init-workspace.sh:ro
     networks:
       - proxy
     labels:
