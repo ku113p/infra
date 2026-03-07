@@ -25,6 +25,11 @@ jobs:
           SERVER="root@${{ secrets.VPS_HOST }}"
           rsync -avz --delete --exclude .env --exclude data/ compose/cryo-pay/ ${SERVER}:/opt/services/cryo-pay/
 
+      - name: Write .env from secret
+        run: |
+          SERVER="root@${{ secrets.VPS_HOST }}"
+          echo "${{ secrets.CRYO_PAY_ENV }}" | ssh ${SERVER} "cat > /opt/services/cryo-pay/.env && chmod 600 /opt/services/cryo-pay/.env"
+
       - name: Restart services
         run: |
           SERVER="root@${{ secrets.VPS_HOST }}"
