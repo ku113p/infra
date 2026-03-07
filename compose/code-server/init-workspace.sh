@@ -9,10 +9,33 @@ mkdir -p "${SETTINGS_DIR}"
 cp /defaults/settings.json "${SETTINGS_FILE}"
 chown "${PUID:-1000}:${PGID:-1000}" "${SETTINGS_DIR}" "${SETTINGS_FILE}"
 
-# Remove defaultChatAgent from product.json to disable Copilot/Chat UI at product level
-# (prevents Command Palette "Use AI features" from re-enabling via settings override)
+# Strip all Copilot/Chat AI properties from product.json
 PRODUCT_JSON="/app/code-server/lib/vscode/product.json"
-if [ -f "$PRODUCT_JSON" ] && jq -e '.defaultChatAgent' "$PRODUCT_JSON" > /dev/null 2>&1; then
-    jq 'del(.defaultChatAgent)' "$PRODUCT_JSON" > /tmp/product.json.tmp \
+if [ -f "$PRODUCT_JSON" ]; then
+    jq '
+      del(.defaultChatAgent) | del(.chatWelcomeView) | del(.chatParticipantAdditions)
+      | if .extensionEnabledApiProposals then
+          .extensionEnabledApiProposals |= with_entries(select(.key | test("copilot"; "i") | not))
+        else . end
+      | if .builtInExtensions then
+          .builtInExtensions |= map(select(.name | test("copilot"; "i") | not))
+        else . end
+    ' "$PRODUCT_JSON" > /tmp/product.json.tmp \
         && mv /tmp/product.json.tmp "$PRODUCT_JSON"
 fi
+
+# Disable built-in Copilot/Chat extensions
+EXTENSIONS_DIR="/app/code-server/lib/vscode/extensions"
+for ext_dir in "$EXTENSIONS_DIR"/github.copilot* "$EXTENSIONS_DIR"/copilot*; do
+    if [ -d "$ext_dir" ] && [[ "$ext_dir" != *.disabled ]]; then
+        mv "$ext_dir" "${ext_dir}.disabled"
+    fi
+done
+
+# Remove user-installed Copilot extensions
+USER_EXT_DIR="/config/extensions"
+for ext_dir in "$USER_EXT_DIR"/github.copilot* "$USER_EXT_DIR"/copilot*; do
+    if [ -d "$ext_dir" ]; then
+        rm -rf "$ext_dir"
+    fi
+done
