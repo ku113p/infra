@@ -1,41 +1,40 @@
 const experience = [
   {
-    role: "Backend Developer",
+    role: "AI Engineer",
     company: "OnSocial",
     period: "Dec 2020 — Present",
     description:
-      "Social network parsing and analytics platform for advertising agencies.",
+      "Social network analytics platform for advertising agencies. Leading AI/ML integration and backend architecture.",
     highlights: [
+      "Built LangGraph-based agent pipelines for automated content analysis",
+      "Integrated LLM embeddings for semantic filtering and search",
+      "Set up data labeling pipelines and LLM evaluation workflows",
       "Developed billing system with Stripe, PayPal, and Doku integrations",
       "Increased revenue by 30% through automated billing",
-      "Built internal analytics platforms for the sales department",
       "Deployed a white-label engine for launching new solutions",
-      "Set up data labeling pipelines and integrated LLMs",
-      "Improved filtering using LLM embeddings",
     ],
     tech: [
       "Python",
-      "Django",
+      "LangGraph",
       "FastAPI",
       "Celery",
-      "MySQL",
-      "MongoDB",
       "ClickHouse",
+      "MongoDB",
+      "MySQL",
       "Docker",
       "Kubernetes",
-      "LangGraph",
     ],
   },
   {
-    role: "Backend Developer",
+    role: "ML Platform Engineer",
     company: "Sber Devices",
     period: "Dec 2019 — Dec 2020",
     description:
-      'Development of components for the "Salut" voice assistant within the banking app ecosystem.',
+      'Built ML infrastructure for the "Salut" voice assistant within the banking app ecosystem.',
     highlights: [
-      "Added 20+ scenarios for the voice assistant",
-      "Designed a system for data storage, labeling, model training, and retraining",
-      "Accelerated the data collection process",
+      "Designed end-to-end system for data storage, labeling, model training, and retraining",
+      "Added 20+ NLU scenarios for the voice assistant",
+      "Accelerated the data collection and annotation process",
     ],
     tech: ["Python", "Django", "MinIO", "Kafka"],
   },
@@ -44,11 +43,11 @@ const experience = [
     company: "Rate&Goods",
     period: "Jun 2018 — Dec 2019",
     description:
-      "Social network for shoppers: product reviews, barcode-based product search.",
+      "Social network for shoppers: product reviews, barcode-based search, and ML-powered recommendations.",
     highlights: [
-      "Fixed a critical neural network bug that showed identical recommendations for over a year",
-      "Built analytics dashboards",
+      "Fixed a critical neural network bug that produced identical recommendations for over a year",
       "Optimized database queries and improved recommendation accuracy",
+      "Built analytics dashboards for product and user insights",
     ],
     tech: ["Python", "Django", "PostgreSQL", "Celery", "Redis"],
   },
@@ -57,7 +56,7 @@ const experience = [
     company: "CheckU & Simkomat",
     period: "May 2017 — Jun 2018",
     description:
-      "CheckU — KYC processes. Simkomat — software for hardware servers, full testing lifecycle.",
+      "CheckU — KYC verification processes. Simkomat — software for hardware servers with full testing lifecycle.",
     highlights: [
       "Achieved 100% test coverage through neural network integration",
       "Increased response speed by 26%",

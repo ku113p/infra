@@ -5,10 +5,10 @@ import experience from "./data/experience";
 const env = import.meta.env;
 
 const name = env.VITE_NAME || "Ilia Ivanov";
-const title = env.VITE_TITLE || "Software Developer";
+const title = env.VITE_TITLE || "AI Engineer";
 const bio =
   env.VITE_BIO ||
-  "Software developer with 8+ years of experience building high-load APIs, billing systems, and developer tools. Working across Python, Rust, and Go — from microservice architectures to ML pipelines.";
+  "AI Engineer with 8+ years in Python. Building production LLM systems, RAG pipelines, and intelligent agents with LangGraph. From data labeling and model evaluation to cost-optimized multi-model architectures.";
 const email = env.VITE_EMAIL || "";
 const telegram = env.VITE_TELEGRAM || "";
 const linkedin = env.VITE_LINKEDIN || "";
@@ -17,37 +17,44 @@ const githubProfiles = ["ku113p", "digitalscyther"];
 const currentYear = new Date().getFullYear();
 
 const techStack = {
+  "AI / ML": [
+    "LangGraph",
+    "LangChain",
+    "Langfuse",
+    "RAG",
+    "Vector DB",
+    "Prompt Engineering",
+    "LLM Evaluation",
+  ],
   Languages: ["Python", "Go", "Rust", "JavaScript"],
   "Frameworks & Libraries": [
     "FastAPI",
-    "Flask",
     "Django",
     "Celery",
     "Axum",
-    "LangChain",
-    "LangGraph",
+    "Flask",
   ],
   "Databases & Storage": [
     "PostgreSQL",
     "MySQL",
-    "SQLite",
     "MongoDB",
     "Redis",
     "ClickHouse",
+    "SQLite",
   ],
   Infrastructure: [
     "Docker",
     "Kubernetes",
-    "Traefik",
-    "Nginx",
     "GitHub Actions",
+    "Nginx",
+    "Traefik",
   ],
-  Monitoring: ["Prometheus", "Grafana", "Datadog"],
+  Observability: ["Prometheus", "Grafana", "Langfuse", "Datadog"],
 };
 
 const sections = [
-  { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
+  { id: "experience", label: "Experience" },
   { id: "stack", label: "Stack" },
 ];
 
@@ -115,7 +122,7 @@ function useTheme() {
         const newTheme = e.matches ? "light" : "dark";
         setTheme(newTheme);
         document.documentElement.setAttribute("data-theme", newTheme);
-        if (themeMetaTag) themeMetaTag.setAttribute("content", newTheme === "light" ? "#ffffff" : "#0f172a");
+        if (themeMetaTag) themeMetaTag.setAttribute("content", newTheme === "light" ? "#ffffff" : "#09090f");
       }
     }
     mq.addEventListener("change", handleChange);
@@ -127,7 +134,7 @@ function useTheme() {
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
-    if (themeMetaTag) themeMetaTag.setAttribute("content", newTheme === "light" ? "#ffffff" : "#0f172a");
+    if (themeMetaTag) themeMetaTag.setAttribute("content", newTheme === "light" ? "#ffffff" : "#09090f");
   }
 
   return { theme, toggleTheme };
@@ -318,8 +325,8 @@ function ContactLinks() {
   return <div className="contact-links">{links}</div>;
 }
 
-function ProjectCard({ project }) {
-  const [open, setOpen] = useState(false);
+function ProjectCard({ project, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
   const ref = useScrollReveal();
   return (
     <div className="project-card reveal" ref={ref}>
@@ -466,20 +473,20 @@ export default function App() {
       </header>
 
       <main className="container">
+        <section className="section" id="projects">
+          <h2 className="section-title">Projects</h2>
+          <div className="projects-grid">
+            {projects.map((project, index) => (
+              <ProjectCard key={project.name} project={project} defaultOpen={index < 2} />
+            ))}
+          </div>
+        </section>
+
         <section className="section" id="experience">
           <h2 className="section-title">Experience</h2>
           <div className="experience-list">
             {experience.map((job) => (
               <ExperienceCard key={job.company} job={job} />
-            ))}
-          </div>
-        </section>
-
-        <section className="section" id="projects">
-          <h2 className="section-title">Projects</h2>
-          <div className="projects-grid">
-            {projects.map((project) => (
-              <ProjectCard key={project.name} project={project} />
             ))}
           </div>
         </section>

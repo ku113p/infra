@@ -1,14 +1,14 @@
 const projects = [
   {
-    name: "CryoPay",
+    name: "Interview",
     description:
-      "Blockchain-based payment platform for creating and managing crypto invoices. Supports Optimism and Arbitrum networks with USDT, features Firebase auth, email and Telegram notifications, subscriptions, donations, webhooks, and an API for integration.",
-    tech: ["Rust", "Axum", "React", "PostgreSQL", "Redis", "Solidity", "Docker"],
+      "AI-powered interview platform that maps professional experience through multi-turn conversation. Uses LangGraph agent orchestration with sub-graphs, vector database for context retrieval, and LLM evaluation pipeline with automated regression testing.",
+    tech: ["Python", "FastAPI", "LangGraph", "RAG", "SQLite", "Docker"],
     links: [
-      { label: "Open App", url: "https://pay.syncapp.tech" },
+      { label: "Promo", url: "https://promo.interview.syncapp.tech" },
       {
         label: "GitHub",
-        url: "https://github.com/digitalscyther/cryo-pay",
+        url: "https://github.com/ku113p/interview",
         icon: "github",
       },
     ],
@@ -16,7 +16,7 @@ const projects = [
   {
     name: "Tools Platform",
     description:
-      "A suite of lightweight developer-tool microservices — URL shortener, HTML page hosting, and a contact form API — unified through an MCP aggregator server for programmatic access.",
+      "A suite of lightweight microservices — URL shortener, HTML page hosting, and a contact form API — unified through an MCP (Model Context Protocol) aggregator server for LLM tool integration.",
     tech: ["Rust", "Axum", "Redis", "PostgreSQL", "MCP", "Docker"],
     links: [
       {
@@ -44,15 +44,15 @@ const projects = [
     ],
   },
   {
-    name: "Interview",
+    name: "CryoPay",
     description:
-      "AI-powered interview platform that maps your professional experience through conversation. Includes a promo landing page, backend API with LangGraph-driven interview workflows, and an MCP server for tool integration.",
-    tech: ["Python", "FastAPI", "LangGraph", "SQLite", "Docker"],
+      "Blockchain-based payment platform for creating and managing crypto invoices. Supports Optimism and Arbitrum networks with USDT, features Firebase auth, email and Telegram notifications, subscriptions, donations, webhooks, and an API for integration.",
+    tech: ["Rust", "Axum", "React", "PostgreSQL", "Redis", "Solidity", "Docker"],
     links: [
-      { label: "Promo", url: "https://promo.interview.syncapp.tech" },
+      { label: "Open App", url: "https://pay.syncapp.tech" },
       {
         label: "GitHub",
-        url: "https://github.com/ku113p/interview",
+        url: "https://github.com/digitalscyther/cryo-pay",
         icon: "github",
       },
     ],
