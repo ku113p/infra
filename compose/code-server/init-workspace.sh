@@ -9,15 +9,12 @@ if [ ! -f "$UV_BIN" ]; then
         sh -c 'curl -LsSf https://astral.sh/uv/install.sh | XDG_BIN_HOME=/config/.local/bin sh'
 fi
 
-# Install Node.js via fnm if not present
-FNM_DIR="/config/.local/share/fnm"
-if [ ! -d "$FNM_DIR" ]; then
+# Install Node.js LTS if not present
+NODE_BIN="/config/.local/bin/node"
+if [ ! -f "$NODE_BIN" ]; then
+    NODE_VERSION="22.14.0"
     s6-setuidgid "${PUID:-1000}:${PGID:-1000}" \
-        sh -c 'curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir /config/.local/share/fnm --skip-shell'
-    export PATH="$FNM_DIR:$PATH"
-    eval "$(${FNM_DIR}/fnm env --shell bash)"
-    s6-setuidgid "${PUID:-1000}:${PGID:-1000}" \
-        sh -c "export PATH=$FNM_DIR:\$PATH && eval \"\$($FNM_DIR/fnm env --shell bash)\" && fnm install --lts"
+        sh -c "curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar -xz --strip-components=1 -C /config/.local/"
 fi
 
 # Always apply VS Code settings from defaults
