@@ -2,6 +2,24 @@
 # Fix workspace ownership to match PUID/PGID on every start
 chown "${PUID:-1000}:${PGID:-1000}" /workspace
 
+# Install uv (Python manager) if not present
+UV_BIN="/config/.local/bin/uv"
+if [ ! -f "$UV_BIN" ]; then
+    s6-setuidgid "${PUID:-1000}:${PGID:-1000}" \
+        sh -c 'curl -LsSf https://astral.sh/uv/install.sh | XDG_BIN_HOME=/config/.local/bin sh'
+fi
+
+# Install Node.js via fnm if not present
+FNM_DIR="/config/.local/share/fnm"
+if [ ! -d "$FNM_DIR" ]; then
+    s6-setuidgid "${PUID:-1000}:${PGID:-1000}" \
+        sh -c 'curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir /config/.local/share/fnm --skip-shell'
+    export PATH="$FNM_DIR:$PATH"
+    eval "$(${FNM_DIR}/fnm env --shell bash)"
+    s6-setuidgid "${PUID:-1000}:${PGID:-1000}" \
+        sh -c "export PATH=$FNM_DIR:\$PATH && eval \"\$($FNM_DIR/fnm env --shell bash)\" && fnm install --lts"
+fi
+
 # Always apply VS Code settings from defaults
 SETTINGS_DIR="/config/data/User"
 SETTINGS_FILE="${SETTINGS_DIR}/settings.json"

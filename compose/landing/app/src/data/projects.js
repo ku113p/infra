@@ -2,7 +2,7 @@ const projects = [
   {
     name: "Interview",
     description:
-      "AI-powered interview platform that maps professional experience through multi-turn conversation. Uses LangGraph agent orchestration with sub-graphs, vector database for context retrieval, and LLM evaluation pipeline with automated regression testing.",
+      "Technical interviews are broken \u2014 scripted questions miss the real story. This platform uses AI to map professional experience through genuine multi-turn conversation, surfacing insights that static resumes can\u2019t. Built with LangGraph agent orchestration, vector database retrieval, and an automated LLM evaluation pipeline.",
     tech: ["Python", "FastAPI", "LangGraph", "RAG", "SQLite", "Docker"],
     links: [
       { label: "Promo", url: "https://promo.interview.syncapp.tech" },
@@ -16,7 +16,7 @@ const projects = [
   {
     name: "Tools Platform",
     description:
-      "A suite of lightweight microservices — URL shortener, HTML page hosting, and a contact form API — unified through an MCP (Model Context Protocol) aggregator server for LLM tool integration.",
+      "What if an LLM could shorten URLs, publish pages, and send messages through a single interface? Three production Rust microservices behind an MCP aggregator, giving AI agents real tools they can call autonomously.",
     tech: ["Rust", "Axum", "Redis", "PostgreSQL", "MCP", "Docker"],
     links: [
       {
@@ -46,13 +46,27 @@ const projects = [
   {
     name: "CryoPay",
     description:
-      "Blockchain-based payment platform for creating and managing crypto invoices. Supports Optimism and Arbitrum networks with USDT, features Firebase auth, email and Telegram notifications, subscriptions, donations, webhooks, and an API for integration.",
+      "Accepting crypto payments shouldn\u2019t require a blockchain engineering team. CryoPay lets businesses create and manage invoices on Optimism and Arbitrum with USDT \u2014 handling auth, notifications, subscriptions, and webhooks out of the box.",
     tech: ["Rust", "Axum", "React", "PostgreSQL", "Redis", "Solidity", "Docker"],
     links: [
       { label: "Open App", url: "https://pay.syncapp.tech" },
       {
         label: "GitHub",
         url: "https://github.com/digitalscyther/cryo-pay",
+        icon: "github",
+      },
+    ],
+  },
+  {
+    name: "Crypto Assets",
+    description:
+      "DeFi portfolio tracker for managing token balances, protocol allocations, and analytics. Lightweight HTMX interface with real-time server-side rendering.",
+    tech: ["Rust", "Axum", "HTMX", "Docker"],
+    links: [
+      { label: "Open App", url: "https://assets.crypto.syncapp.tech" },
+      {
+        label: "GitHub",
+        url: "https://github.com/ku113p/crypto-assets",
         icon: "github",
       },
     ],
@@ -71,20 +85,6 @@ const projects = [
       {
         label: "GitHub",
         url: "https://github.com/ku113p/price-alert-bot",
-        icon: "github",
-      },
-    ],
-  },
-  {
-    name: "Crypto Assets",
-    description:
-      "DeFi portfolio tracker for managing token balances, protocol allocations, and analytics. Lightweight HTMX interface with real-time server-side rendering.",
-    tech: ["Rust", "Axum", "HTMX", "Docker"],
-    links: [
-      { label: "Open App", url: "https://assets.crypto.syncapp.tech" },
-      {
-        label: "GitHub",
-        url: "https://github.com/ku113p/crypto-assets",
         icon: "github",
       },
     ],

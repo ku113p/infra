@@ -4,14 +4,13 @@ const experience = [
     company: "OnSocial",
     period: "Dec 2020 — Present",
     description:
-      "Social network analytics platform for advertising agencies. Leading AI/ML integration and backend architecture.",
+      "Social network analytics platform for advertising agencies. Leading AI/ML integration and full-stack backend architecture as the core engineer driving the AI roadmap.",
     highlights: [
-      "Built LangGraph-based agent pipelines for automated content analysis",
-      "Integrated LLM embeddings for semantic filtering and search",
-      "Set up data labeling pipelines and LLM evaluation workflows",
-      "Developed billing system with Stripe, PayPal, and Doku integrations",
-      "Increased revenue by 30% through automated billing",
-      "Deployed a white-label engine for launching new solutions",
+      "Architected LangGraph-based agent pipelines for automated content analysis across client accounts",
+      "Integrated LLM embeddings for semantic filtering and search, improving content discovery relevance",
+      "Designed and deployed data labeling pipelines and LLM evaluation workflows to ensure model quality",
+      "Increased platform revenue by 30% by building automated billing with Stripe, PayPal, and Doku integrations",
+      "Deployed a white-label engine enabling rapid launch of customized solutions for enterprise clients",
     ],
     tech: [
       "Python",
@@ -30,11 +29,11 @@ const experience = [
     company: "Sber Devices",
     period: "Dec 2019 — Dec 2020",
     description:
-      'Built ML infrastructure for the "Salut" voice assistant within the banking app ecosystem.',
+      "Built ML infrastructure for Salut, the voice assistant powering Sber\u2019s banking app ecosystem \u2014 one of the largest financial platforms in Eastern Europe.",
     highlights: [
-      "Designed end-to-end system for data storage, labeling, model training, and retraining",
-      "Added 20+ NLU scenarios for the voice assistant",
-      "Accelerated the data collection and annotation process",
+      "Designed the end-to-end ML pipeline: data ingestion, labeling, model training, and production deployment",
+      "Shipped 20+ NLU scenarios (intent recognition, entity extraction, dialog flows) expanding the assistant across banking and payments",
+      "Streamlined the data collection and annotation process, cutting iteration cycles and accelerating model improvements",
     ],
     tech: ["Python", "Django", "MinIO", "Kafka"],
   },
@@ -45,9 +44,9 @@ const experience = [
     description:
       "Social network for shoppers: product reviews, barcode-based search, and ML-powered recommendations.",
     highlights: [
-      "Fixed a critical neural network bug that produced identical recommendations for over a year",
-      "Optimized database queries and improved recommendation accuracy",
-      "Built analytics dashboards for product and user insights",
+      "Discovered and fixed a critical neural network bug that had served identical recommendations to every user for over a year \u2014 undetected",
+      "Rebuilt the recommendation pipeline with optimized database queries, improving accuracy and response times",
+      "Built analytics dashboards providing product and user insights to the business team",
     ],
     tech: ["Python", "Django", "PostgreSQL", "Celery", "Redis"],
   },
@@ -56,11 +55,11 @@ const experience = [
     company: "CheckU & Simkomat",
     period: "May 2017 — Jun 2018",
     description:
-      "CheckU — KYC verification processes. Simkomat — software for hardware servers with full testing lifecycle.",
+      "CheckU \u2014 KYC verification platform. Simkomat \u2014 software for hardware SIM-card vending servers with full testing lifecycle.",
     highlights: [
-      "Achieved 100% test coverage through neural network integration",
-      "Increased response speed by 26%",
-      "Built E2E testing scripts with a custom framework",
+      "Achieved 100% test coverage through neural network integration for automated verification",
+      "Improved response speed by 26% through backend optimization",
+      "Built an E2E testing framework and scripts covering the full hardware-software stack",
     ],
     tech: ["Python", "Docker", "MySQL", "MongoDB", "Redis", "RabbitMQ"],
   },
