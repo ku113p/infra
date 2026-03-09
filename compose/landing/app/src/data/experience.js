@@ -6,7 +6,7 @@ const experience = [
     description:
       "Social network analytics platform for advertising agencies. Leading AI/ML integration and full-stack backend architecture as the core engineer driving the AI roadmap.",
     highlights: [
-      "Architected LangGraph-based agent pipelines for automated content analysis across client accounts",
+      "Architected a production-grade embedding pipeline aggregating 10M+ user profiles — consolidating variable-length content (posts, descriptions, bios) into unified dense vectors for semantic search and LLM-powered filtering at scale",
       "Integrated LLM embeddings for semantic filtering and search, improving content discovery relevance",
       "Designed and deployed data labeling pipelines and LLM evaluation workflows to ensure model quality",
       "Increased platform revenue by 30% by building automated billing with Stripe, PayPal, and Doku integrations",
