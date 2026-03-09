@@ -148,6 +148,21 @@ function useTheme() {
   return { theme, toggleTheme };
 }
 
+function useScrollDirection() {
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    let lastY = window.scrollY;
+    function onScroll() {
+      const y = window.scrollY;
+      setHidden(y > 80 && y > lastY);
+      lastY = y;
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return hidden;
+}
+
 /* ── Icons ── */
 
 function MailIcon() {
@@ -249,6 +264,16 @@ function MoonIcon() {
   );
 }
 
+function MoreIcon() {
+  return (
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="12" cy="5" r="2" />
+      <circle cx="12" cy="12" r="2" />
+      <circle cx="12" cy="19" r="2" />
+    </svg>
+  );
+}
+
 function LinkIcon({ icon }) {
   if (icon === "github") return <GitHubIcon />;
   if (icon === "telegram") return <TelegramIcon />;
@@ -259,8 +284,28 @@ function LinkIcon({ icon }) {
 
 function Nav({ theme, toggleTheme }) {
   const active = useActiveSection();
+  const navHidden = useScrollDirection();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    function handleClick(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
+    }
+    function handleKey(e) {
+      if (e.key === "Escape") setMenuOpen(false);
+    }
+    document.addEventListener("click", handleClick, true);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("click", handleClick, true);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [menuOpen]);
+
   return (
-    <nav className="nav">
+    <nav className={`nav ${navHidden ? "nav-hidden" : ""}`}>
       <div className="nav-inner">
         <a href="#" className="nav-brand" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
           {name.split(" ")[0].toLowerCase()}
@@ -284,6 +329,21 @@ function Nav({ theme, toggleTheme }) {
           <button className="nav-pdf" onClick={() => window.print()} type="button" title="Save as PDF" aria-label="Save as PDF">
             <DownloadIcon />
           </button>
+        </div>
+        <div className="nav-overflow" ref={menuRef}>
+          <button className="nav-overflow-btn" onClick={() => setMenuOpen(!menuOpen)} type="button" aria-label="More actions" aria-expanded={menuOpen} aria-haspopup="true">
+            <MoreIcon />
+          </button>
+          <div className={`nav-dropdown ${menuOpen ? "nav-dropdown-open" : ""}`}>
+            <button className="nav-dropdown-item" onClick={() => { toggleTheme(); setMenuOpen(false); }} type="button">
+              {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+              <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
+            </button>
+            <button className="nav-dropdown-item" onClick={() => { window.print(); setMenuOpen(false); }} type="button">
+              <DownloadIcon />
+              <span>Save as PDF</span>
+            </button>
+          </div>
         </div>
       </div>
     </nav>
