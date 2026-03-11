@@ -31,8 +31,6 @@ http:
       rateLimit:
         average: 50
         burst: 150
-        sourceCriterion:
-          ipStrategy: {}
     gzip:
       compress:
         excludedContentTypes:
