@@ -13,6 +13,26 @@ http:
       rateLimit:
         average: 100
         burst: 200
+    code-server-headers:
+      headers:
+        browserXssFilter: true
+        contentTypeNosniff: true
+        customFrameOptionsValue: "SAMEORIGIN"
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
+        referrerPolicy: "strict-origin-when-cross-origin"
+        customResponseHeaders:
+          X-Robots-Tag: "noindex, nofollow, nosnippet"
+          Permissions-Policy: "camera=(), microphone=(), geolocation=(), payment=()"
+          X-Download-Options: "noopen"
+          X-Permitted-Cross-Domain-Policies: "none"
+    rate-limit-code-server:
+      rateLimit:
+        average: 50
+        burst: 150
+        sourceCriterion:
+          ipStrategy: {}
     gzip:
       compress:
         excludedContentTypes:

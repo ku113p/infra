@@ -25,6 +25,7 @@ services:
       - "traefik.http.routers.code-server.rule=Host(`code.dev.syncapp.tech`)"
       - "traefik.http.routers.code-server.entrypoints=websecure"
       - "traefik.http.routers.code-server.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.code-server.middlewares=code-server-headers@file,rate-limit-code-server@file,gzip@file"
       - "traefik.http.services.code-server.loadbalancer.server.port=8443"
     deploy:
       resources:
