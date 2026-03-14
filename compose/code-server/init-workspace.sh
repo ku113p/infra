@@ -2,6 +2,32 @@
 # Fix workspace ownership to match PUID/PGID on every start
 chown "${PUID:-1000}:${PGID:-1000}" /workspace
 
+# Install system build dependencies if gcc is missing
+if ! command -v gcc &>/dev/null; then
+    apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        pkg-config \
+        libssl-dev \
+        sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
+fi
+
+# Install Rust toolchain if not present
+CARGO_BIN="/config/.cargo/bin/cargo"
+if [ ! -f "$CARGO_BIN" ]; then
+    s6-setuidgid "${PUID:-1000}:${PGID:-1000}" \
+        sh -c 'export CARGO_HOME=/config/.cargo RUSTUP_HOME=/config/.rustup && curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y'
+fi
+
+# Install GitHub CLI if not present
+GH_BIN="/config/.local/bin/gh"
+if [ ! -f "$GH_BIN" ]; then
+    GH_VERSION="2.88.1"
+    curl -fsSL "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz" \
+        | tar -xz --strip-components=2 -C /config/.local/bin "gh_${GH_VERSION}_linux_amd64/bin/gh"
+    chown "${PUID:-1000}:${PGID:-1000}" /config/.local/bin/gh
+fi
+
 # Install uv (Python manager) if not present
 UV_BIN="/config/.local/bin/uv"
 if [ ! -f "$UV_BIN" ]; then
@@ -12,7 +38,7 @@ fi
 # Install Node.js LTS if not present
 NODE_BIN="/config/.local/bin/node"
 if [ ! -f "$NODE_BIN" ]; then
-    NODE_VERSION="22.14.0"
+    NODE_VERSION="24.14.0"
     s6-setuidgid "${PUID:-1000}:${PGID:-1000}" \
         sh -c "curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar -xz --strip-components=1 -C /config/.local/"
 fi
