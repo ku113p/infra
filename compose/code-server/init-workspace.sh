@@ -9,6 +9,7 @@ if ! command -v gcc &>/dev/null; then
         pkg-config \
         libssl-dev \
         sqlite3 \
+        libsqlite3-dev \
     && rm -rf /var/lib/apt/lists/*
 fi
 
