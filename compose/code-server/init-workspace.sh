@@ -10,6 +10,10 @@ if ! command -v gcc &>/dev/null; then
         libssl-dev \
         sqlite3 \
         libsqlite3-dev \
+        jq \
+        ripgrep \
+        fd-find \
+        wget \
     && rm -rf /var/lib/apt/lists/*
 fi
 
