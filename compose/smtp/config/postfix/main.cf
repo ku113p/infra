@@ -1,0 +1,1 @@
+non_smtpd_milters = $rspamd_milter

@@ -26,6 +26,7 @@ services:
       - ENABLE_OPENDMARC=0
       - ENABLE_POLICYD_SPF=0
       - ENABLE_SPAMASSASSIN=0
+      - ENABLE_AMAVIS=0
       - ENABLE_POP3=0
       - SSL_TYPE=self-signed
       - POSTMASTER_ADDRESS=postmaster@syncapp.tech
