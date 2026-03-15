@@ -27,9 +27,7 @@ services:
       - ENABLE_POLICYD_SPF=0
       - ENABLE_SPAMASSASSIN=0
       - ENABLE_POP3=0
-      - SSL_TYPE=manual
-      - SSL_CERT_PATH=/var/mail-state/manual-ssl/cert
-      - SSL_KEY_PATH=/var/mail-state/manual-ssl/key
+      - SSL_TYPE=self-signed
       - POSTMASTER_ADDRESS=postmaster@syncapp.tech
       - LOG_LEVEL=info
       - ONE_DIR=1
