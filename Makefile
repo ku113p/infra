@@ -9,7 +9,7 @@ SERVICES_DIR := /opt/services
 
 .PHONY: help status health stats logs logs-traefik logs-service \
 	restart-interview restart-traefik restart-monitoring restart-landing restart-cryo-pay restart-tools-mcp \
-	restart-crypto-assets restart-code-server setup-tools-secrets restart-all
+	restart-crypto-assets restart-code-server restart-smtp setup-tools-secrets restart-all
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -63,6 +63,9 @@ restart-crypto-assets: ## Restart crypto-assets
 restart-code-server: ## Restart code-server
 	@ssh $(SERVER) "cd $(SERVICES_DIR)/code-server && docker compose up -d"
 
+restart-smtp: ## Restart smtp server
+	@ssh $(SERVER) "cd $(SERVICES_DIR)/smtp && docker compose up -d"
+
 setup-tools-secrets: ## Generate auth tokens for tools services on VPS
 	@ssh $(SERVER) 'bash -s' < scripts/setup-tools-secrets.sh
 
@@ -76,4 +79,5 @@ restart-all: ## Restart all stacks
 		cd $(SERVICES_DIR)/cryo-pay && docker compose up -d && \
 		cd $(SERVICES_DIR)/crypto-assets && docker compose up -d && \
 		cd $(SERVICES_DIR)/tools-mcp && docker compose up -d && \
-		cd $(SERVICES_DIR)/code-server && docker compose up -d"
+		cd $(SERVICES_DIR)/code-server && docker compose up -d && \
+		cd $(SERVICES_DIR)/smtp && docker compose up -d"

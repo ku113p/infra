@@ -1,0 +1,74 @@
+services:
+  smtp:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    container_name: smtp
+    hostname: smtp.syncapp.tech
+    restart: always
+    stop_grace_period: 1m
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "25:25"
+      - "465:465"
+      - "587:587"
+      - "993:993"
+    volumes:
+      - smtp-data:/var/mail
+      - smtp-state:/var/mail-state
+      - smtp-logs:/var/log/mail
+      - ./config/:/tmp/docker-mailserver/
+    environment:
+      - OVERRIDE_HOSTNAME=smtp.syncapp.tech
+      - ENABLE_RSPAMD=1
+      - ENABLE_CLAMAV=0
+      - ENABLE_FAIL2BAN=1
+      - ENABLE_OPENDKIM=0
+      - ENABLE_OPENDMARC=0
+      - ENABLE_POLICYD_SPF=0
+      - ENABLE_SPAMASSASSIN=0
+      - ENABLE_POP3=0
+      - SSL_TYPE=manual
+      - SSL_CERT_PATH=/var/mail-state/manual-ssl/cert
+      - SSL_KEY_PATH=/var/mail-state/manual-ssl/key
+      - POSTMASTER_ADDRESS=postmaster@syncapp.tech
+      - LOG_LEVEL=info
+      - ONE_DIR=1
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "ss -tlnp | grep -q ':25 '"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    labels:
+      - "mailserver-traefik.renew.domain=smtp.syncapp.tech"
+
+  smtp-cert-renewer:
+    image: youtous/mailserver-traefik:latest
+    container_name: smtp-cert-renewer
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/services/traefik/acme/acme.json:/tmp/traefik/acme.json:ro
+    environment:
+      - CERTS_SOURCE=file
+      - DOMAINS=smtp.syncapp.tech
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 128M
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'traefik' || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  smtp-data:
+  smtp-state:
+  smtp-logs:

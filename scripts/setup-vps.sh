@@ -41,7 +41,7 @@ echo "[OK] vm.overcommit_memory = 1"
 
 # --- Directory structure ---
 echo "[*] Creating directory structure..."
-mkdir -p "${SERVICES_DIR}"/{traefik/{dynamic,acme,logs},landing,interview/{backend,promo-dist,data},monitoring,price-alert-bot,cryo-pay/{nginx,data},crypto-assets,backup}
+mkdir -p "${SERVICES_DIR}"/{traefik/{dynamic,acme,logs},landing,interview/{backend,promo-dist,data},monitoring,price-alert-bot,cryo-pay/{nginx,data},crypto-assets,smtp/config,backup}
 
 # Traefik cert file (must exist with strict permissions)
 touch "${SERVICES_DIR}/traefik/acme/acme.json"
@@ -75,6 +75,10 @@ if command -v ufw &>/dev/null; then
     ufw allow 22/tcp comment 'SSH'
     ufw allow 80/tcp comment 'HTTP'
     ufw allow 443/tcp comment 'HTTPS'
+    ufw allow 25/tcp comment 'SMTP'
+    ufw allow 465/tcp comment 'SMTPS'
+    ufw allow 587/tcp comment 'Submission'
+    ufw allow 993/tcp comment 'IMAPS'
     # Temp ports for parallel Traefik testing (remove after swap)
     ufw allow 8080/tcp comment 'Traefik temp HTTP'
     ufw allow 8443/tcp comment 'Traefik temp HTTPS'
