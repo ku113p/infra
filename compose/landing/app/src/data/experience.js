@@ -1,7 +1,7 @@
 const experience = [
   {
     role: "AI Engineer",
-    company: "OnSocial",
+    company: "NDA",
     period: "Dec 2020 — Present",
     description:
       "Social network analytics platform for advertising agencies. Leading AI/ML integration and full-stack backend architecture as the core engineer driving the AI roadmap.",
