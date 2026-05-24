@@ -1,5 +1,33 @@
 const projects = [
   {
+    name: "CryoPay",
+    description:
+      "Crypto payment platform on Optimism and Arbitrum (USDT ERC-20). Rust/Axum backend running three concurrent Tokio tasks: REST API, blockchain monitor daemon streaming on-chain events via ethers-rs, and a Telegram notification bot. Includes a sliding-window rate limiter tuned to Infura credit costs per RPC method, webhook delivery with retries, and automated Docker CI/CD to GHCR.",
+    tech: ["Rust", "Axum", "ethers-rs", "Solidity", "React", "PostgreSQL", "Redis", "Docker"],
+    links: [
+      { label: "Open App", url: "https://pay.syncapp.tech" },
+      {
+        label: "GitHub",
+        url: "https://github.com/digitalscyther/cryo-pay",
+        icon: "github",
+      },
+    ],
+  },
+  {
+    name: "Crypto Assets",
+    description:
+      "DeFi portfolio tracker for managing token balances, protocol allocations, and analytics. Lightweight HTMX interface with real-time server-side rendering.",
+    tech: ["Rust", "Axum", "HTMX", "Docker"],
+    links: [
+      { label: "Open App", url: "https://assets.crypto.syncapp.tech" },
+      {
+        label: "GitHub",
+        url: "https://github.com/ku113p/crypto-assets",
+        icon: "github",
+      },
+    ],
+  },
+  {
     name: "Interview",
     description:
       "Technical interviews are broken \u2014 scripted questions miss the real story. This platform uses AI to map professional experience through genuine multi-turn conversation, surfacing insights that static resumes can\u2019t. Built with LangGraph agent orchestration, vector database retrieval, and an automated LLM evaluation pipeline.",
@@ -40,34 +68,6 @@ const projects = [
         name: "Message",
         description: "Contact form API microservice.",
         github: "https://github.com/ku113p/message",
-      },
-    ],
-  },
-  {
-    name: "CryoPay",
-    description:
-      "Accepting crypto payments shouldn\u2019t require a blockchain engineering team. CryoPay lets businesses create and manage invoices on Optimism and Arbitrum with USDT \u2014 handling auth, notifications, subscriptions, and webhooks out of the box.",
-    tech: ["Rust", "Axum", "React", "PostgreSQL", "Redis", "Solidity", "Docker"],
-    links: [
-      { label: "Open App", url: "https://pay.syncapp.tech" },
-      {
-        label: "GitHub",
-        url: "https://github.com/digitalscyther/cryo-pay",
-        icon: "github",
-      },
-    ],
-  },
-  {
-    name: "Crypto Assets",
-    description:
-      "DeFi portfolio tracker for managing token balances, protocol allocations, and analytics. Lightweight HTMX interface with real-time server-side rendering.",
-    tech: ["Rust", "Axum", "HTMX", "Docker"],
-    links: [
-      { label: "Open App", url: "https://assets.crypto.syncapp.tech" },
-      {
-        label: "GitHub",
-        url: "https://github.com/ku113p/crypto-assets",
-        icon: "github",
       },
     ],
   },

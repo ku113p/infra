@@ -5,10 +5,10 @@ import experience from "./data/experience";
 const env = import.meta.env;
 
 const name = env.VITE_NAME || "Ilia Ivanov";
-const title = env.VITE_TITLE || "AI Engineer";
+const title = env.VITE_TITLE || "Senior Python Engineer";
 const bio =
   env.VITE_BIO ||
-  "I build AI systems that ship \u2014 not just demo. 8 years of Python and production engineering, now focused on LLM agents, RAG pipelines, and multi-model architectures that survive real traffic and real budgets.";
+  "8 years of Python and production engineering. Building on-chain backends, DeFi integrations, and EVM event pipelines \u2014 from smart contract interaction to reliable infrastructure that handles real traffic.";
 const email = env.VITE_EMAIL || "";
 const telegram = env.VITE_TELEGRAM || "";
 const linkedin = env.VITE_LINKEDIN || "";
@@ -17,14 +17,13 @@ const githubProfile = "ku113p";
 const currentYear = new Date().getFullYear();
 
 const techStack = {
-  "AI / ML": [
-    "LangGraph",
-    "LangChain",
-    "Langfuse",
-    "RAG",
-    "Vector DB",
-    "Prompt Engineering",
-    "LLM Evaluation",
+  "Blockchain / Web3": [
+    "EVM",
+    "Solidity",
+    "ethers-rs",
+    "web3.py",
+    "Optimism",
+    "Arbitrum",
   ],
   Languages: ["Python", "Go", "Rust", "JavaScript"],
   "Frameworks & Libraries": [
@@ -49,7 +48,7 @@ const techStack = {
     "Nginx",
     "Traefik",
   ],
-  Observability: ["Prometheus", "Grafana", "Langfuse", "Datadog"],
+  Observability: ["Prometheus", "Grafana", "Datadog"],
 };
 
 const sections = [
@@ -387,7 +386,7 @@ function HeroCta() {
     <div className="hero-cta">
       <span className="status-indicator">
         <span className="status-dot" />
-        <span className="status-text">Open to AI Engineer roles</span>
+        <span className="status-text">Open to Senior Python Engineer roles</span>
       </span>
       <a href={`mailto:${email}`} className="cta-primary">Get in touch</a>
     </div>
