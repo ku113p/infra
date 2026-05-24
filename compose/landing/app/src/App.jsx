@@ -5,10 +5,10 @@ import experience from "./data/experience";
 const env = import.meta.env;
 
 const name = env.VITE_NAME || "Ilia Ivanov";
-const title = env.VITE_TITLE || "Senior Python Engineer";
+const title = env.VITE_TITLE || "Senior Python Engineer · Crypto & DeFi";
 const bio =
   env.VITE_BIO ||
-  "8 years of Python and production engineering. Building on-chain backends, DeFi integrations, and EVM event pipelines \u2014 from smart contract interaction to reliable infrastructure that handles real traffic.";
+  "Senior Python backend engineer with 8+ years in production. Focused on crypto and DeFi infrastructure \u2014 on-chain event streaming, EVM backends, and AI-powered data pipelines. Built CryoPay: real-time USDT payment processing on Optimism and Arbitrum. Run agentic workflows in production.";
 const email = env.VITE_EMAIL || "";
 const telegram = env.VITE_TELEGRAM || "";
 const linkedin = env.VITE_LINKEDIN || "";
