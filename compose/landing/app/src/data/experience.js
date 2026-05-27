@@ -1,7 +1,7 @@
 const experience = [
   {
     role: "Backend Developer",
-    company: "NDA",
+    company: "OnSocial",
     period: "Dec 2020 — Present",
     description:
       "Social network parsing and analytics platform for advertising agencies.",

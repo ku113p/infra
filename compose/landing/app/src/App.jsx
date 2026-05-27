@@ -8,7 +8,7 @@ const name = env.VITE_NAME || "Ilia Ivanov";
 const title = env.VITE_TITLE || "Senior Python Engineer · Crypto & DeFi";
 const bio =
   env.VITE_BIO ||
-  "Senior Python backend engineer with 8+ years in production. Focused on crypto and DeFi infrastructure \u2014 on-chain event streaming, EVM backends, and AI-powered data pipelines. Built CryoPay: real-time USDT payment processing on Optimism and Arbitrum. Run agentic workflows in production.";
+  "Senior Python backend engineer with 8+ years in production. Focused on crypto and DeFi infrastructure \u2014 on-chain event streaming, EVM backends, and USDT settlement on Layer 2. Built CryoPay (real-time payments on Optimism and Arbitrum) and a DeFi portfolio tracker. Also run AI agent workflows in production.";
 const email = env.VITE_EMAIL || "";
 const telegram = env.VITE_TELEGRAM || "";
 const linkedin = env.VITE_LINKEDIN || "";
