@@ -113,6 +113,7 @@ Fully automated via per-stack GitHub Actions workflows on push to `master` (`.gi
 
 Scripts in `scripts/`:
 - `setup-vps.sh` — one-time VPS provisioning (Docker, firewall, directory structure, log rotation)
+- `setup-cells-backup.sh` — one-time: the `cellsbak` sftp drop box in `/opt/services/backup` for the agent cells' encrypted nightly packages. No shell, chroot, keys in `/etc/ssh/authorized_keys/cellsbak`, a `Match` block at the end of `sshd_config`, 30-day rotation.
 - `setup-tools-secrets.sh` — generates `AUTH_TOKEN`, `MCP_AUTH_TOKEN`, and `REDIS_PASSWORD` for tools services. Writes `.env` files to each service directory on VPS, then auto-restarts all 4 tools services so containers pick up the new tokens.
 
 A `Makefile` provides shortcuts for common operations (`make help`).

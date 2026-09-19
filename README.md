@@ -168,6 +168,9 @@ ssh root@$VPS_HOST 'bash -s' < scripts/setup-vps.sh
 # 2. Generate auth tokens for tools services
 ssh root@$VPS_HOST 'bash -s' < scripts/setup-tools-secrets.sh
 
+# 2b. Drop box for the agent cells' encrypted backups (private repo ku113p/cells)
+ssh root@$VPS_HOST 'bash -s' < scripts/setup-cells-backup.sh "$(cat ~/.ssh/id_ed25519_cellsbak.pub)"
+
 # 3. Auth VPS to GHCR (need GitHub PAT with read:packages)
 ssh root@$VPS_HOST
 echo "ghp_..." | docker login ghcr.io -u ku113p --password-stdin
