@@ -37,6 +37,7 @@ Both repos auto-deploy on push to master. No manual SSH needed.
 | interview | promo + backend + mcp | `ghcr.io/ku113p/interview-*` | https://*.interview.syncapp.tech |
 | price-alert-bot | app + db + pgbouncer | `ghcr.io/ku113p/price-alert-bot` | — (Telegram only) |
 | monitoring | uptime-kuma + dozzle | `louislam/uptime-kuma`, `amir20/dozzle` | https://monitor.syncapp.tech, https://logs.syncapp.tech |
+| hub | hub | built on the VPS from `ku113p/cells` | https://hub.syncapp.tech |
 | watchtower | watchtower | `containrrr/watchtower` | — |
 | traefik | traefik | `traefik` | — (reverse proxy) |
 
@@ -54,6 +55,8 @@ Both repos auto-deploy on push to master. No manual SSH needed.
 ├── interview/          # interview project (promo + backend + mcp)
 ├── price-alert-bot/    # Telegram bot + Postgres + PgBouncer
 ├── monitoring/         # uptime-kuma + dozzle
+├── hub/                # agent console (private repo ku113p/cells); .env by hand
+├── backup/             # cell backups pushed by the laptop (sftp, user cellsbak)
 └── watchtower/         # auto-update Docker images
 ```
 
@@ -151,6 +154,7 @@ cd /opt/services/interview && docker compose up -d backend
 | `api.interview.syncapp.tech` | Interview backend API |
 | `mcp.interview.syncapp.tech` | Interview MCP server |
 | `monitor.syncapp.tech` | Uptime Kuma |
+| `hub.syncapp.tech` | Agent console (cells) |
 | `logs.syncapp.tech` | Dozzle (log viewer) |
 
 All subdomains are A records pointing to the VPS IP.

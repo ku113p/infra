@@ -1,0 +1,38 @@
+services:
+  hub:
+    # Built on the VPS from the private repo ku113p/cells (`infra/vps/deploy.sh` there):
+    # a package of a private repo would need a registry token on the server.
+    image: cells-hub:latest
+    container_name: hub
+    restart: unless-stopped
+    # .env on the VPS: the bot token, the web secret and HUB_CELLS (one <name>=<url>|<token>
+    # per cell). Written by hand; the cells repo documents it.
+    env_file: .env
+    networks:
+      - proxy
+    # The cells live behind the host's wg0 (10.99.0.0/24); docker's NAT and the MASQUERADE on
+    # wg0 take the container's packets there as 10.99.0.1.
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.hub.rule=Host(`${HUB_HOST}`)"
+      - "traefik.http.routers.hub.entrypoints=websecure"
+      - "traefik.http.routers.hub.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.hub.middlewares=security-headers@file"
+      - "traefik.http.services.hub.loadbalancer.server.port=8000"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      # Traefik ignores a container until it is healthy: probe often at start, then relax.
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 2s
+
+networks:
+  proxy:
+    external: true

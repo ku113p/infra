@@ -78,6 +78,13 @@ Infrastructure-as-code repository managing Docker Compose stacks, deployment scr
 **Code Server** (`code.dev.syncapp.tech`):
 - **code-server** — VS Code web IDE (linuxserver/code-server). 2 CPU / 4GB. Password-protected via `CODE_SERVER_PASSWORD` GitHub secret.
 
+**Hub** (`hub.syncapp.tech`):
+- **hub** — the operator's console for the agent cells (Telegram bot + web in one
+  process). The image is built on the VPS from the private repo `ku113p/cells`
+  (`infra/vps/deploy.sh` there); this repo holds only the compose file. 0.5 CPU / 512MB. Reaches the cells over the host's WireGuard
+  (`/etc/wireguard/wg0.conf`, `10.99.0.0/24`), which is configured on the VPS by hand.
+  `.env` on the VPS carries the bot token, the web secret and `HUB_CELLS`.
+
 **Monitoring** (`monitor.syncapp.tech`, `logs.syncapp.tech`):
 - **uptime-kuma** — uptime monitoring dashboard
 - **dozzle** — Docker log viewer (password-protected)
