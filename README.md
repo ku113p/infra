@@ -171,6 +171,10 @@ ssh root@$VPS_HOST 'bash -s' < scripts/setup-tools-secrets.sh
 # 2b. Drop box for the agent cells' encrypted backups (private repo ku113p/cells)
 ssh root@$VPS_HOST 'bash -s' < scripts/setup-cells-backup.sh "$(cat ~/.ssh/id_ed25519_cellsbak.pub)"
 
+# 2c. Uptime Kuma monitors for the cells: hub up, cell up, same code on both, nightly backup
+#     (re-running is safe; existing monitors are left as they are)
+scp scripts/setup-cells-monitors.sh root@$VPS_HOST: && ssh root@$VPS_HOST bash setup-cells-monitors.sh
+
 # 3. Auth VPS to GHCR (need GitHub PAT with read:packages)
 ssh root@$VPS_HOST
 echo "ghp_..." | docker login ghcr.io -u ku113p --password-stdin
