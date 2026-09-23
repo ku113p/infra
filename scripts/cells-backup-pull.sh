@@ -13,7 +13,7 @@
 # packages are age-encrypted to a key this host does not have, and the cell cannot write
 # here: it only serves. It is still not trusted: a cell that turned hostile could serve a
 # new, well-formed package every hour and fill this disk while the monitor stayed green
-# (found by two refuters, 2026-09-23). So a package is taken only if its stamp is a night
+# (found by two refuters, 2026-09-23). So a package is taken only if its stamp is six hours
 # after the newest one here and not in the future, it has a size cap, the directory has one
 # too, and the newest of each month is kept for a year whatever came after it.
 set -euo pipefail
@@ -25,7 +25,7 @@ keep_days=30
 keep_min=7
 max_bytes=$((256 * 1024 * 1024))        # a package; they are ~10 MB today
 max_dir_bytes=$((5 * 1024 * 1024 * 1024))
-min_gap_h=20                             # nightly, with room for a late night
+min_gap_h=6                              # a hostile cell adds at most four a day; the directory cap pages
 # shellcheck source=/dev/null
 . "$conf"
 : "${CELL_URL:?CELL_URL missing in $conf}" "${KUMA_PUSH_URL:?KUMA_PUSH_URL missing in $conf}"
@@ -63,7 +63,7 @@ if [ "$used" -ge "$max_dir_bytes" ]; then
 fi
 
 # The newest package, if it is one to take: a name of this cell's shape, a sum listed, a
-# size under the cap, a stamp at least a night after the newest here and not in the future.
+# size under the cap, a stamp six hours after the newest here and not in the future.
 read -r name want size < <(python3 - "$dir" "$tmp" "$cell" "$max_bytes" "$min_gap_h" <<'PY'
 import datetime as dt, json, os, re, sys
 d, path, cell, cap, gap = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4]), int(sys.argv[5])
