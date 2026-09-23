@@ -171,6 +171,11 @@ ssh root@$VPS_HOST 'bash -s' < scripts/setup-tools-secrets.sh
 # 2b. Drop box for the agent cells' encrypted backups (private repo ku113p/cells)
 ssh root@$VPS_HOST 'bash -s' < scripts/setup-cells-backup.sh "$(cat ~/.ssh/id_ed25519_cellsbak.pub)"
 
+# 2b'. The VPS pulls each cell's nightly backup over the tunnel (cells decision 0037); the
+#      token step is in the cells repo: docs/runbooks/backup-pull.md
+scp scripts/cells-backup-pull.sh root@$VPS_HOST:/usr/local/sbin/
+ssh root@$VPS_HOST 'bash -s -- emp-a http://10.99.0.2:8080' < scripts/setup-cells-backup-pull.sh
+
 # 2c. Uptime Kuma monitors for the cells: hub up, cell up, same code on both, nightly backup
 #     (re-running is safe; existing monitors are left as they are)
 scp scripts/setup-cells-monitors.sh root@$VPS_HOST: && ssh root@$VPS_HOST bash setup-cells-monitors.sh

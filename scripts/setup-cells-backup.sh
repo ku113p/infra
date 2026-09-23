@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# LEGACY (2026-09-23): the laptop no longer uploads here — the VPS pulls the backup itself
+# (cells decision 0037, scripts/cells-backup-pull.sh). Kept until the pull has run green for a
+# week; its packages are copied into the pull directory by setup-cells-backup-pull.sh.
 # One-time on the VPS: a drop box for the agent cells' nightly backups (decision 0024 in the
 # private repo ku113p/cells). The laptop pushes an encrypted package here over sftp; this user
 # can do nothing else — no shell, no port forwarding, and a chroot it cannot escape. The
